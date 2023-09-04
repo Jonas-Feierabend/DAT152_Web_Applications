@@ -34,7 +34,7 @@ if (customElements.get('task-list') === undefined) {
 			
 			var button = document.createElement("button")
 			button.addEventListener("click", (event)=>{
-				this.openTaskBox(event)
+				this.createTaskBox(event)
 
 			})
 			this.shadow.appendChild(button)
@@ -153,16 +153,35 @@ if (customElements.get('task-list') === undefined) {
 			}
 			
 		}
-		openTaskBox(event){
+		createTaskBox(event){
 
 			if (customElements.get('task-box') === undefined) {
-				customElements.define('task-box', TaskBox.TaskBox);
+				this.TaskBox = customElements.define('task-box', TaskBox.TaskBox);
+				var closeButton = document.querySelector("task-box").shadowRoot.firstChild.nextSibling.lastChild.previousSibling.firstChild
+				closeButton.addEventListener("click",(event)=>this.closeTaskbox(event))
+			}else{
+				var dialog = document.querySelector("task-box").shadowRoot.firstChild.nextSibling
+				dialog.showModal()
 			}
 		}
-		showTaskBox(event){
-			var modal = customElements.get("task-box")
-			modal.show()
+		
+		closeTaskbox(event){
+			var button = event.target
+			var div = button.parentElement.previousSibling.previousSibling
+			var task_title = div.firstChild.nextSibling.nextSibling.nextSibling.firstChild.nextSibling.value 
+			
+			var status = div.firstChild.nextSibling.nextSibling.nextSibling.nextSibling.nextSibling.nextSibling.firstChild.value 
+			/*  [
+				 {
+				 id: 1,
+				 status: "WAITING",
+				 title: "Paint roof"
+				 },
+				 {*/ 
+			console.log([{id:this.getIdForNewTask(),status:status ,  title : task_title}])
+			this.showTask({id:this.getIdForNewTask(),status:status ,  title : task_title})
 		}
+
         /**
          * @public
          * @param {Array} list with all possible task statuses
@@ -185,8 +204,19 @@ if (customElements.get('task-list') === undefined) {
         changestatusCallback(callback) {
             // Fill in code
 			var id = callback.target.id 
-			var val = callback.target.value 
-			this.updateTask({"id": id,"status": val})
+			var val = callback.target.value
+			
+			var element = callback.target
+			var task_name = element.parentElement.previousElementSibling.previousElementSibling.innerHTML;
+
+			var response = confirm('Set ' +task_name+ ' to ' + val ) 
+			if(response){
+				console.log("updating "+task_name+ " to " + val)
+				this.updateTask({"id": id,"status": val})
+				}
+			else{
+				console.log("dont update")
+			}
     		
         }
 
@@ -272,6 +302,22 @@ if (customElements.get('task-list') === undefined) {
             // Fill in code
             return this.tasklist.length 
         }
+        
+        getIdForNewTask(){
+			var id  = 0 
+			while(true){
+				for (var element of this.tasklist){
+			
+					if (element.id === id){
+						console.log("matches")
+						id++
+						continue 
+					}
+					
+				}
+				return id 
+			}
+		}
     }
     customElements.define('task-list', TaskList);
     
