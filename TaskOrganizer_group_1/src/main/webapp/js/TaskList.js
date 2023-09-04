@@ -2,14 +2,16 @@
   * TaskList
   * Manage view with list of tasks
   */
- console.log("comp wird aufsgeführt ")
+ import TaskBox from "./TaskBox.js"
+ 
+
 if (customElements.get('task-list') === undefined) {
-	console.log("is undefined")
+
     class TaskList extends HTMLElement {
 
         constructor() {
             super();
-			console.log("creating tasklist ")
+		
             /**
              * Fill inn rest of code
              */
@@ -29,19 +31,56 @@ if (customElements.get('task-list') === undefined) {
         
         display(){
 			this.shadow.innerHTML = ''
+			
+			var button = document.createElement("button")
+			button.addEventListener("click", (event)=>{
+				this.openTaskBox(event)
 
+			})
+			this.shadow.appendChild(button)
+
+			var button = document.createElement("button")
+			button.addEventListener("click", (event)=>{
+				this.showTaskBox(event)
+
+			})
+			this.shadow.appendChild(button)
+			
+			
 			if(this.tasklist.length != 0){
-				const hElement = document . createElement ( 'h1');
-				hElement.textContent = "header"
-				this.shadow.appendChild(hElement)
 				
 				const table = document.createElement('table')
 
+				/* header */ 
+				var tr = document.createElement("tr");
+				var td1 = document.createElement("td")
+				td1.innerHTML = "Task"
+				var td2 = document.createElement("td")
+				td2.innerHTML = "Status"
+				
+				tr.appendChild(td1)
+				tr.appendChild(td2)
+				
+				table.appendChild(tr)
 				
 				
+				/* line*/ 
+				var tr = document.createElement("tr")
+				
+				
+				var td = document.createElement("td")
+				td.setAttribute("colspan",4)
+				var hr = document.createElement("hr")
+				td.appendChild(hr)
+				
+				
+				tr.appendChild(td)
+				
+				
+				table.appendChild(tr)
+				/* items */ 
 				for( var e of this.tasklist){	
 					if(typeof e == 'undefined'){
-						console.log("undefined")
 						continue 
 					}
 					var tr = document.createElement('tr');
@@ -91,13 +130,39 @@ if (customElements.get('task-list') === undefined) {
 					table.appendChild(tr)
 					
 				}
+								
+				/* line*/ 
+				var tr = document.createElement("tr")
+				
+				
+				var td = document.createElement("td")
+				td.setAttribute("colspan",4)
+				var hr = document.createElement("hr")
+				td.appendChild(hr)
+				
+				
+				tr.appendChild(td)
+				
+				
+				table.appendChild(tr)
 				this.shadow . appendChild ( table );
+				
+				
 			}else{
-				console.log("no showing")
+
 			}
 			
 		}
+		openTaskBox(event){
 
+			if (customElements.get('task-box') === undefined) {
+				customElements.define('task-box', TaskBox.TaskBox);
+			}
+		}
+		showTaskBox(event){
+			var modal = customElements.get("task-box")
+			modal.show()
+		}
         /**
          * @public
          * @param {Array} list with all possible task statuses
@@ -143,7 +208,7 @@ if (customElements.get('task-list') === undefined) {
         showTask(task) {
             // Fill in code
             this.tasklist.unshift(task)
-            console.log("tasklist" + this.tasklist)
+
 
             this.display(); 
         }
@@ -153,7 +218,7 @@ if (customElements.get('task-list') === undefined) {
          * @param {Object} task - Object with attributes {'id':taskId,'status':newStatus}
          */
         updateTask(task) {
-			console.log("update")
+	
             // Fill in code
             if(this.tasklist.length != 0 ){
 
@@ -163,7 +228,6 @@ if (customElements.get('task-list') === undefined) {
 					
 					
 					if(element.id == task.id){
-						console.log("changing " + element.title + "to : " + task.status )
 						var task_element = this.tasklist[i]
 						task_element.status = task.status 
 						this.tasklist[i] = task_element 
@@ -184,10 +248,9 @@ if (customElements.get('task-list') === undefined) {
             // Fill in code
             
             if(this.tasklist.length != 0 ){
-				console.log("drinnen")
             var i = 0
             for(var element of this.tasklist){
-				console.log("element")
+
 				
 				
 				if(element.id == id){
