@@ -51,6 +51,39 @@ if (customElements.get('task-view') === undefined) {
 			}
 			
 			
+		createTaskBox(event){
+
+		if (customElements.get('task-box') === undefined) {
+			this.TaskBox = customElements.define('task-box', TaskBox.TaskBox);
+			var closeButton = document.querySelector("task-box").shadowRoot.firstChild.nextSibling.lastChild.previousSibling.firstChild
+			closeButton.addEventListener("click",(event)=>{
+			this.closeTaskbox(event)})
+		}else{
+			var dialog = document.querySelector("task-box").shadowRoot.firstChild.nextSibling
+			dialog.showModal()
+		}
+	}
+	
+	closeTaskbox(event){
+		var button = event.target
+		var div = button.parentElement.previousSibling.previousSibling
+		var task_title = div.firstChild.nextSibling.nextSibling.nextSibling.firstChild.nextSibling.value 
+		
+		var status = div.firstChild.nextSibling.nextSibling.nextSibling.nextSibling.nextSibling.nextSibling.firstChild.value 
+		/*  [
+			 {
+			 id: 1,
+			 status: "WAITING",
+			 title: "Paint roof"
+			 },
+			 {*/ 
+		
+		var id = 1 /* TODO fixe id */ 
+		const tasklist = document.querySelector("task-list");
+		tasklist.showTask({id:id,status:status ,  title : task_title})
+	}
+			
+			
 			
 		createTasklist(){
 						customElements.define('task-list', TaskList.TaskList);	
