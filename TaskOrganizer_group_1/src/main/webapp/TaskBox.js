@@ -28,7 +28,6 @@ class TaskBox extends HTMLElement {
 		constructor() {
             super();
             this.shadow = this.attachShadow ({ mode : 'open' });
-			console.log("creating tasklist ")
 			this.content = template.content.cloneNode(true);
 			const path = import.meta.url.match(/.*\//)[0];
 			this.shadow.appendChild(this.content)
@@ -40,7 +39,7 @@ class TaskBox extends HTMLElement {
 			
 			this.possibleStatuses = []
 			
-			this.setStatuseslist(["WAITING", "ACTIVE", "DONE"])
+	
 
         }
 
@@ -75,9 +74,9 @@ class TaskBox extends HTMLElement {
 
        		var select_element = this.shadow.querySelector("dialog > div > div > select")
        		
-       		console.log(this.possibleStatuses)
+  
        		for (var e of this.possibleStatuses){
-				   console.log(e)
+		
 				   var element = document.createElement("option")
 				   element.setAttribute("value",e)
 				   element.innerHTML = e 

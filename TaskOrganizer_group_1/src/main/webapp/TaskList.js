@@ -16,7 +16,7 @@ class TaskList extends HTMLElement {
          * Fill inn rest of code
          */
 		// Create a shadow DOM structure
-		this.shadow = this.attachShadow ({ mode : 'closed' });
+		this.shadow = this.attachShadow ({ mode : 'open' });
 
 		
 		this.tasklist = []
@@ -90,9 +90,11 @@ class TaskList extends HTMLElement {
 					select.appendChild(opt)
 				}
 				select.setAttribute("id",e.id)
+				
+				/* 
 				select.addEventListener("change",(event)=>{
 					this.changestatusCallback(event)
-				})
+				})*/ 
 				td3.appendChild(select)
 
 				
@@ -102,10 +104,11 @@ class TaskList extends HTMLElement {
 				button.innerHTML = "Remove"
 
 				button.setAttribute("id",e.id)
+				/*
 				button.addEventListener("click", (event)=>{
 					this.deletetaskCallback(event)
 
-				})
+				})*/ 
 				td4.appendChild(button)
 				
 				
@@ -162,7 +165,10 @@ class TaskList extends HTMLElement {
      * @public
      * @param {function} callback
      */
+	
+
     changestatusCallback(callback) {
+		/* wird nicht benutzt */ 
         // Fill in code
 		var id = callback.target.id 
 		var val = callback.target.value
@@ -188,6 +194,7 @@ class TaskList extends HTMLElement {
      */
     deletetaskCallback(callback) {
         // Fill in code
+        // not used 
         this.removeTask(callback.target.id)
     }
 
