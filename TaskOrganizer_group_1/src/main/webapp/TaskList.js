@@ -5,327 +5,317 @@
  import TaskBox from "./TaskBox.js"
 
 
-if (customElements.get('task-list') === undefined) {
 
-    class TaskList extends HTMLElement {
 
-        constructor() {
-            super();
+class TaskList extends HTMLElement {
+
+    constructor() {
+        super();
+	
+        /**
+         * Fill inn rest of code
+         */
+		// Create a shadow DOM structure
+		this.shadow = this.attachShadow ({ mode : 'closed' });
+
 		
-            /**
-             * Fill inn rest of code
-             */
-			// Create a shadow DOM structure
-			this.shadow = this.attachShadow ({ mode : 'closed' });
+		this.tasklist = []
+		this.possibleStatuses = []
+		
+		this.display(); 
+		
+	
 
-			
-			this.tasklist = []
-			this.possibleStatuses = []
-			
-			this.display(); 
-			
+    }
+    
+    
+    display(){
+		this.shadow.innerHTML = ''
 		
 
-        }
-        
-        
-        display(){
-			this.shadow.innerHTML = ''
+		
+		
+		if(this.tasklist.length != 0){
 			
-			var button = document.createElement("button")
-			button.addEventListener("click", (event)=>{
-				this.createTaskBox(event)
+			const table = document.createElement('table')
 
-			})
-			this.shadow.appendChild(button)
-
-			var button = document.createElement("button")
-			button.addEventListener("click", (event)=>{
-				this.showTaskBox(event)
-
-			})
-			this.shadow.appendChild(button)
+			/* header */ 
+			var tr = document.createElement("tr");
+			var td1 = document.createElement("td")
+			td1.innerHTML = "Task"
+			var td2 = document.createElement("td")
+			td2.innerHTML = "Status"
+			
+			tr.appendChild(td1)
+			tr.appendChild(td2)
+			
+			table.appendChild(tr)
 			
 			
-			if(this.tasklist.length != 0){
-				
-				const table = document.createElement('table')
+			/* line*/ 
+			var tr = document.createElement("tr")
+			
+			
+			var td = document.createElement("td")
+			td.setAttribute("colspan",4)
+			var hr = document.createElement("hr")
+			td.appendChild(hr)
+			
+			
+			tr.appendChild(td)
+			
+			
+			table.appendChild(tr)
+			/* items */ 
+			for( var e of this.tasklist){	
+				if(typeof e == 'undefined'){
+					continue 
+				}
+				var tr = document.createElement('tr');
+			
 
-				/* header */ 
-				var tr = document.createElement("tr");
+
 				var td1 = document.createElement("td")
-				td1.innerHTML = "Task"
+				td1.innerHTML = e.title
+				
 				var td2 = document.createElement("td")
-				td2.innerHTML = "Status"
+				td2.innerHTML = e.status 
+				
+				var td3 = document.createElement("td")
+				var select = document.createElement('select')
+				for (var el of this.possibleStatuses){
+
+					var opt = document.createElement("option")
+					opt.innerHTML = el 
+					select.appendChild(opt)
+				}
+				select.setAttribute("id",e.id)
+				select.addEventListener("change",(event)=>{
+					this.changestatusCallback(event)
+				})
+				td3.appendChild(select)
+
+				
+				
+				var td4 = document.createElement("td")
+				var button = document.createElement("button")
+				button.innerHTML = "Remove"
+
+				button.setAttribute("id",e.id)
+				button.addEventListener("click", (event)=>{
+					this.deletetaskCallback(event)
+
+				})
+				td4.appendChild(button)
+				
 				
 				tr.appendChild(td1)
 				tr.appendChild(td2)
-				
-				table.appendChild(tr)
-				
-				
-				/* line*/ 
-				var tr = document.createElement("tr")
-				
-				
-				var td = document.createElement("td")
-				td.setAttribute("colspan",4)
-				var hr = document.createElement("hr")
-				td.appendChild(hr)
-				
-				
-				tr.appendChild(td)
+				tr.appendChild(td3)
+				tr.appendChild(td4)
 				
 				
 				table.appendChild(tr)
-				/* items */ 
-				for( var e of this.tasklist){	
-					if(typeof e == 'undefined'){
-						continue 
-					}
-					var tr = document.createElement('tr');
 				
-
-
-					var td1 = document.createElement("td")
-					td1.innerHTML = e.title
-					
-					var td2 = document.createElement("td")
-					td2.innerHTML = e.status 
-					
-					var td3 = document.createElement("td")
-					var select = document.createElement('select')
-					for (var el of this.possibleStatuses){
-
-						var opt = document.createElement("option")
-						opt.innerHTML = el 
-						select.appendChild(opt)
-					}
-					select.setAttribute("id",e.id)
-					select.addEventListener("change",(event)=>{
-						this.changestatusCallback(event)
-					})
-					td3.appendChild(select)
-
-					
-					
-					var td4 = document.createElement("td")
-					var button = document.createElement("button")
-					button.innerHTML = "Remove"
-
-					button.setAttribute("id",e.id)
-					button.addEventListener("click", (event)=>{
-						this.deletetaskCallback(event)
-	
-					})
-					td4.appendChild(button)
-					
-					
-					tr.appendChild(td1)
-					tr.appendChild(td2)
-					tr.appendChild(td3)
-					tr.appendChild(td4)
-					
-					
-					table.appendChild(tr)
-					
-				}
-								
-				/* line*/ 
-				var tr = document.createElement("tr")
-				
-				
-				var td = document.createElement("td")
-				td.setAttribute("colspan",4)
-				var hr = document.createElement("hr")
-				td.appendChild(hr)
-				
-				
-				tr.appendChild(td)
-				
-				
-				table.appendChild(tr)
-				this.shadow . appendChild ( table );
-				
-				
-			}else{
-
 			}
+							
+			/* line*/ 
+			var tr = document.createElement("tr")
 			
-		}
-		createTaskBox(event){
+			
+			var td = document.createElement("td")
+			td.setAttribute("colspan",4)
+			var hr = document.createElement("hr")
+			td.appendChild(hr)
+			
+			
+			tr.appendChild(td)
+			
+			
+			table.appendChild(tr)
+			this.shadow . appendChild ( table );
+			
+			
+		}else{
 
-			if (customElements.get('task-box') === undefined) {
-				this.TaskBox = customElements.define('task-box', TaskBox.TaskBox);
-				var closeButton = document.querySelector("task-box").shadowRoot.firstChild.nextSibling.lastChild.previousSibling.firstChild
-				closeButton.addEventListener("click",(event)=>{
-				this.closeTaskbox(event)})
-			}else{
-				var dialog = document.querySelector("task-box").shadowRoot.firstChild.nextSibling
-				dialog.showModal()
-			}
 		}
 		
-		closeTaskbox(event){
-			var button = event.target
-			var div = button.parentElement.previousSibling.previousSibling
-			var task_title = div.firstChild.nextSibling.nextSibling.nextSibling.firstChild.nextSibling.value 
-			
-			var status = div.firstChild.nextSibling.nextSibling.nextSibling.nextSibling.nextSibling.nextSibling.firstChild.value 
-			/*  [
-				 {
-				 id: 1,
-				 status: "WAITING",
-				 title: "Paint roof"
-				 },
-				 {*/ 
-			
-			var id = this.getIdForNewTask()
-			console.log(id)
-			this.showTask({id:id,status:status ,  title : task_title})
+	}
+	createTaskBox(event){
+
+		if (customElements.get('task-box') === undefined) {
+			this.TaskBox = customElements.define('task-box', TaskBox.TaskBox);
+			var closeButton = document.querySelector("task-box").shadowRoot.firstChild.nextSibling.lastChild.previousSibling.firstChild
+			closeButton.addEventListener("click",(event)=>{
+			this.closeTaskbox(event)})
+		}else{
+			var dialog = document.querySelector("task-box").shadowRoot.firstChild.nextSibling
+			dialog.showModal()
 		}
-
-        /**
-         * @public
-         * @param {Array} list with all possible task statuses
-         */
-        setStatuseslist(allstatuses) {
-            // Fill in code
-   			this.possibleStatuses = []
-   			this.possibleStatuses[0] = "choose"
-            this.possibleStatuses = this.possibleStatuses.concat(allstatuses)
-
-            this.display()
-
-        }
-
-        /**
-         * Add callback to run on change on change of status of a task, i.e. on change in the SELECT element
-         * @public
-         * @param {function} callback
-         */
-        changestatusCallback(callback) {
-            // Fill in code
-			var id = callback.target.id 
-			var val = callback.target.value
-			
-			var element = callback.target
-			var task_name = element.parentElement.previousElementSibling.previousElementSibling.innerHTML;
-
-			var response = confirm('Set ' +task_name+ ' to ' + val ) 
-			if(response){
-				console.log("updating "+task_name+ " to " + val)
-				this.updateTask({"id": id,"status": val})
-				}
-			else{
-				console.log("dont update")
-			}
-    		
-        }
-
-        /**
-         * Add callback to run on click on delete button of a task
-         * @public
-         * @param {function} callback
-         */
-        deletetaskCallback(callback) {
-            // Fill in code
-            this.removeTask(callback.target.id)
-        }
-
-        /**
-         * Add task at top in list of tasks in the view
-         * @public
-         * @param {Object} task - Object representing a task
-         */
-        showTask(task) {
-            // Fill in code
-            this.tasklist.unshift(task)
-
-
-            this.display(); 
-        }
-
-        /**
-         * Update the status of a task in the view
-         * @param {Object} task - Object with attributes {'id':taskId,'status':newStatus}
-         */
-        updateTask(task) {
+	}
 	
-            // Fill in code
-            if(this.tasklist.length != 0 ){
+	closeTaskbox(event){
+		var button = event.target
+		var div = button.parentElement.previousSibling.previousSibling
+		var task_title = div.firstChild.nextSibling.nextSibling.nextSibling.firstChild.nextSibling.value 
+		
+		var status = div.firstChild.nextSibling.nextSibling.nextSibling.nextSibling.nextSibling.nextSibling.firstChild.value 
+		/*  [
+			 {
+			 id: 1,
+			 status: "WAITING",
+			 title: "Paint roof"
+			 },
+			 {*/ 
+		
+		var id = this.getIdForNewTask()
+		console.log(id)
+		this.showTask({id:id,status:status ,  title : task_title})
+	}
 
-	            var i = 0
-	            for(var element of this.tasklist){
+    /**
+     * @public
+     * @param {Array} list with all possible task statuses
+     */
+    setStatuseslist(allstatuses) {
+        // Fill in code
+		this.possibleStatuses = []
+		this.possibleStatuses[0] = "choose"
+        this.possibleStatuses = this.possibleStatuses.concat(allstatuses)
 
-					
-					
-					if(element.id == task.id){
-						var task_element = this.tasklist[i]
-						task_element.status = task.status 
-						this.tasklist[i] = task_element 
-						break 
-					}else{
-					i++
-					}
-				}
-				this.display()
+        this.display()
+
+    }
+
+    /**
+     * Add callback to run on change on change of status of a task, i.e. on change in the SELECT element
+     * @public
+     * @param {function} callback
+     */
+    changestatusCallback(callback) {
+        // Fill in code
+		var id = callback.target.id 
+		var val = callback.target.value
+		
+		var element = callback.target
+		var task_name = element.parentElement.previousElementSibling.previousElementSibling.innerHTML;
+
+		var response = confirm('Set ' +task_name+ ' to ' + val ) 
+		if(response){
+			console.log("updating "+task_name+ " to " + val)
+			this.updateTask({"id": id,"status": val})
 			}
-        }
+		else{
+			console.log("dont update")
+		}
+		
+    }
 
-        /**
-         * Remove a task from the view
-         * @param {Integer} task - ID of task to remove
-         */
-        removeTask(id) {
-            // Fill in code
-            
-            if(this.tasklist.length != 0 ){
+    /**
+     * Add callback to run on click on delete button of a task
+     * @public
+     * @param {function} callback
+     */
+    deletetaskCallback(callback) {
+        // Fill in code
+        this.removeTask(callback.target.id)
+    }
+
+    /**
+     * Add task at top in list of tasks in the view
+     * @public
+     * @param {Object} task - Object representing a task
+     */
+    showTask(task) {
+        // Fill in code
+        this.tasklist.unshift(task)
+
+
+        this.display(); 
+    }
+
+    /**
+     * Update the status of a task in the view
+     * @param {Object} task - Object with attributes {'id':taskId,'status':newStatus}
+     */
+    updateTask(task) {
+
+        // Fill in code
+        if(this.tasklist.length != 0 ){
+
             var i = 0
             for(var element of this.tasklist){
 
 				
 				
-				if(element.id == id){
-					this.tasklist.splice(i,1)
+				if(element.id == task.id){
+					var task_element = this.tasklist[i]
+					task_element.status = task.status 
+					this.tasklist[i] = task_element 
 					break 
 				}else{
 				i++
 				}
 			}
 			this.display()
-			}
-        }
+		}
+    }
 
-        /**
-         * @public
-         * @return {Number} - Number of tasks on display in view
-         */
-        getNumtasks() {
-            // Fill in code
-            return this.tasklist.length 
-        }
+    /**
+     * Remove a task from the view
+     * @param {Integer} task - ID of task to remove
+     */
+    removeTask(id) {
+        // Fill in code
         
-        getIdForNewTask(){
+        if(this.tasklist.length != 0 ){
+        var i = 0
+        for(var element of this.tasklist){
 
-			var id  = 0 
-			while(true){
-				var vergeben = false 
-				for (var element of this.tasklist){
-					if (element.id === id){
-						id++
-						vergeben = true 
-					}
-					
-				}
-				if(!vergeben){
-					break 
+			
+			
+			if(element.id == id){
+				this.tasklist.splice(i,1)
+				break 
+			}else{
+			i++
+			}
+		}
+		this.display()
+		}
+    }
+
+    /**
+     * @public
+     * @return {Number} - Number of tasks on display in view
+     */
+    getNumtasks() {
+        // Fill in code
+        return this.tasklist.length 
+    }
+    
+    getIdForNewTask(){
+
+		var id  = 0 
+		while(true){
+			var vergeben = false 
+			for (var element of this.tasklist){
+				if (element.id === id){
+					id++
+					vergeben = true 
 				}
 				
 			}
-			return id 
+			if(!vergeben){
+				break 
+			}
+			
 		}
-    }
+		return id 
+	}
+}
+    
+/* 
     customElements.define('task-list', TaskList);
     
     
@@ -354,6 +344,9 @@ if (customElements.get('task-list') === undefined) {
 			tasklist.showTask(t)
 		}
 }
+*/ 
 
 
-
+export default{
+	TaskList
+}
