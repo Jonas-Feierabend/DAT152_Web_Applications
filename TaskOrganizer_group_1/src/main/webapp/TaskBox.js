@@ -35,26 +35,37 @@ class TaskBox extends HTMLElement {
 			
 			this.shadow.querySelector("dialog").show()
 
-			
-			this.shadow.querySelector("span").addEventListener("click", (event)=>{
-				this.closeCallback()
+			this.addCloseCallback() 
 
-			})
 			
 			this.possibleStatuses = []
 			
-			this.setStatuseslist()
+			this.setStatuseslist(["WAITING", "ACTIVE", "DONE"])
 
         }
 
         
-        closeCallback(){
-			/*console.log("closing")
-			this.shadow.querySelector("dialog").removeAttribute("open")*/ 
+        addCloseCallback(){
+			this.shadow.querySelector("span").addEventListener("click", (event)=>{
+				this.close()
+
+			})
+
+		}
+		
+		close() {
 			var dialog = document.querySelector("task-box").shadowRoot.firstChild.nextSibling
 			dialog.close() 
 		}
 		
+		
+		show(){
+			/* aktuell in  tasklist.createTaskBox  implementiert */
+		}
+		
+		 newtaskCallback(callback){
+			 /* auch aktuell in tasklist implementiert in closeTaskBox*/ 
+		 }
 		
 		setStatuseslist(allstatuses) {
             // Fill in code
@@ -62,7 +73,17 @@ class TaskBox extends HTMLElement {
    			this.possibleStatuses[0] = "choose"
             this.possibleStatuses = this.possibleStatuses.concat(allstatuses)
 
-       		console.log(this.shadow.querySelector("dialog > select"))
+       		var select_element = this.shadow.querySelector("dialog > div > div > select")
+       		
+       		console.log(this.possibleStatuses)
+       		for (var e of this.possibleStatuses){
+				   console.log(e)
+				   var element = document.createElement("option")
+				   element.setAttribute("value",e)
+				   element.innerHTML = e 
+				   
+				   select_element.appendChild(element)
+			   }
 
         }
         
