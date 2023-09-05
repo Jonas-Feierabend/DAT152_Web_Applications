@@ -3,7 +3,7 @@
   * Manage view with list of tasks
   */
  import TaskBox from "./TaskBox.js"
- 
+
 
 if (customElements.get('task-list') === undefined) {
 
@@ -158,7 +158,8 @@ if (customElements.get('task-list') === undefined) {
 			if (customElements.get('task-box') === undefined) {
 				this.TaskBox = customElements.define('task-box', TaskBox.TaskBox);
 				var closeButton = document.querySelector("task-box").shadowRoot.firstChild.nextSibling.lastChild.previousSibling.firstChild
-				closeButton.addEventListener("click",(event)=>this.closeTaskbox(event))
+				closeButton.addEventListener("click",(event)=>{
+				this.closeTaskbox(event)})
 			}else{
 				var dialog = document.querySelector("task-box").shadowRoot.firstChild.nextSibling
 				dialog.showModal()
@@ -178,8 +179,10 @@ if (customElements.get('task-list') === undefined) {
 				 title: "Paint roof"
 				 },
 				 {*/ 
-			console.log([{id:this.getIdForNewTask(),status:status ,  title : task_title}])
-			this.showTask({id:this.getIdForNewTask(),status:status ,  title : task_title})
+			
+			var id = this.getIdForNewTask()
+			console.log(id)
+			this.showTask({id:id,status:status ,  title : task_title})
 		}
 
         /**
@@ -304,19 +307,23 @@ if (customElements.get('task-list') === undefined) {
         }
         
         getIdForNewTask(){
+
 			var id  = 0 
 			while(true){
+				var vergeben = false 
 				for (var element of this.tasklist){
-			
 					if (element.id === id){
-						console.log("matches")
 						id++
-						continue 
+						vergeben = true 
 					}
 					
 				}
-				return id 
+				if(!vergeben){
+					break 
+				}
+				
 			}
+			return id 
 		}
     }
     customElements.define('task-list', TaskList);

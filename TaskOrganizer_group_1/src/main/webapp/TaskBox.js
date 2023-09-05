@@ -1,6 +1,7 @@
 /**
  * 
  */
+
 const template = document.createElement("template");
 /* 			 <link rel="stylesheet" type="text/css"
 			 href="${import.meta.url.match(/.*\//)[0]}/taskbox.css"/>*/ 
@@ -15,7 +16,7 @@ const template = document.createElement("template");
 			 <input type="text" size="25" maxlength="80"
 			 placeholder="Task title" autofocus/>
 			 </div>
-			 <div>Status:</div><div><select> <option value="hi"> hi </option></select></div>
+			 <div>Status:</div><div><select></select></div>
 			 </div>
 			 <p><button type="submit">Add task</button></p>
 			 </dialog>
@@ -39,7 +40,10 @@ class TaskBox extends HTMLElement {
 				this.closeCallback()
 
 			})
-		
+			
+			this.possibleStatuses = []
+			
+			this.setStatuseslist()
 
         }
 
@@ -50,6 +54,17 @@ class TaskBox extends HTMLElement {
 			var dialog = document.querySelector("task-box").shadowRoot.firstChild.nextSibling
 			dialog.close() 
 		}
+		
+		
+		setStatuseslist(allstatuses) {
+            // Fill in code
+   			this.possibleStatuses = []
+   			this.possibleStatuses[0] = "choose"
+            this.possibleStatuses = this.possibleStatuses.concat(allstatuses)
+
+       		console.log(this.shadow.querySelector("dialog > select"))
+
+        }
         
 
     
