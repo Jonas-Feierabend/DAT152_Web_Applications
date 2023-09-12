@@ -161,7 +161,7 @@ class TaskList extends HTMLElement {
 										if (check == true) {
 											callback({id:id, status:val})
 											}
-										this.display() 
+							
 									})
 			}
 		
@@ -183,7 +183,7 @@ class TaskList extends HTMLElement {
 								if (check == true) {
 										callback(id)
 										}
-								this.display() 
+			
 							})
 		}
     }

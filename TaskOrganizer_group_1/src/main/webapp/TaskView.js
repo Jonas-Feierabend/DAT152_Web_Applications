@@ -7,7 +7,22 @@
 import TaskList from "./TaskList.js";
 
   
-  
+const template = document.createElement("template");
+template.innerHTML = `
+ <link rel="stylesheet" type="text/css"
+ href="${import.meta.url.match(/.*\//)[0]}/taskview.css"/>
+ <h1>Tasks</h1>
+ <div id="message"><p>Waiting for server data.</p></div>
+ <div id="newtask">
+ <button type="button" disabled>New task</button>
+ </div>
+ <!-- The task list -->
+ <task-list></task-list>
+ 
+ <!-- The Modal -->
+ <task-box></task-box>
+`;
+
   
 if (customElements.get('task-view') === undefined) {
 
@@ -30,6 +45,12 @@ if (customElements.get('task-view') === undefined) {
 			 //clear dom 
 			this.shadow.innerHTML = ''
 			
+			
+			// headline
+			var head = document.createElement("h1")
+			head.innerHTML = "Tasks" 
+			
+			this.shadow.appendChild(head)
 			// ADD Task button 
 			var button = document.createElement("button")
 			button.innerHTML = "add task "
@@ -98,8 +119,7 @@ if (customElements.get('task-view') === undefined) {
 							}
 	
 						
-						const tasklist = document.querySelector("task-list");
-						
+						var tasklist = document.querySelector("task-list");		
 						
 						/* get statuses from database */ 
 						var statuses = await this.getStatusesFromDb()
@@ -128,7 +148,7 @@ if (customElements.get('task-view') === undefined) {
 							tasklist.showTask(t)
 						}
 						
-
+						tasklist.display() 
 						
 						
 						/* add remove callback */ 
@@ -136,6 +156,9 @@ if (customElements.get('task-view') === undefined) {
 						
 						/* add change callback */ 
 						tasklist.changestatusCallback(this.updateTaskInDb.bind(this)) 
+						
+						
+						
 			}
 			
 		/**
