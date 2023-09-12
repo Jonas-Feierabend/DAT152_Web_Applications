@@ -101,6 +101,9 @@ class TaskBox extends HTMLElement {
 		 }
 		
 		setStatuseslist(allstatuses) {
+			
+			if(allstatuses == this.possibleStatuses){}
+			else{
             // Fill in code
    			this.possibleStatuses = []
    			this.possibleStatuses[0] = "choose"
@@ -110,7 +113,7 @@ class TaskBox extends HTMLElement {
        		
   
        		for (var e of this.possibleStatuses){
-		
+					
 				   var element = document.createElement("option")
 				   element.setAttribute("value",e)
 				   element.innerHTML = e 
@@ -118,6 +121,7 @@ class TaskBox extends HTMLElement {
 				   select_element.appendChild(element)
 			   }
 
+        }
         }
         
 

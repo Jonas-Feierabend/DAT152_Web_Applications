@@ -70,22 +70,29 @@ if (customElements.get('task-view') === undefined) {
 				if (customElements.get('task-box') === undefined) {
 					// create the task box 
 					this.TaskBox = customElements.define('task-box', TaskBox.TaskBox);
+
 				}
-				/* get statuses from database */ 
-				var statuses = await this.getStatusesFromDb()
-				if(statuses == -1){
-					statuses = ["Database Error"]
-				}
-				
-				/* set statuses */ 
-				var task_box = this.shadow.querySelector("task-box")
-				task_box.setStatuseslist(statuses)
-				
+
+													/* get statuses from database */ 
+					var statuses = await this.getStatusesFromDb()
+					if(statuses == -1){
+						statuses = ["Database Error"]
+					}
+					
+					/* set statuses */ 
+					var task_box = this.shadow.querySelector("task-box")
+					task_box.setStatuseslist(statuses)
 				task_box.show() 
 				/* add new task callback */ 
-				task_box.addNewTaskCallback(this.addTaskToDb.bind(this))
+				task_box.addNewTaskCallback(this.closeTaskBox.bind(this))
 					
 				
+		}
+		
+		async closeTaskBox(data){
+			var tasklist = this.shadow.querySelector("task-list")
+			tasklist.showTask(data)
+			this.addTaskToDb(data)
 		}
 	
 			
@@ -137,9 +144,9 @@ if (customElements.get('task-view') === undefined) {
 						
 						
 						tasklist.addCallbacks(this.deleteTaskInDb.bind(this),this.updateTaskInDb.bind(this))
-						console.log("hi")
+			
 						tasklist.display() 
-						console.log("hi2")
+	
 						
 						/* user can now add attributes*/ 
 						this.shadow.querySelector("div > button").removeAttribute("disabled")

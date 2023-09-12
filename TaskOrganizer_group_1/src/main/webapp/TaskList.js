@@ -18,7 +18,7 @@ class TaskList extends HTMLElement {
 		this.tasklist = []
 		this.possibleStatuses = []
 		
-		this.setter = "unsetted "
+
 
     }
     addCallbacks(deleteCallback,updateCallback){
@@ -211,7 +211,7 @@ class TaskList extends HTMLElement {
     showTask(task) {
         // Fill in code
         this.tasklist.unshift(task)
- 
+ 		this.display() 
   
     }
 
