@@ -30,7 +30,8 @@ if (customElements.get('task-view') === undefined) {
 
         constructor() {
             super();
-		
+
+
 			// Create a shadow DOM structure
 			this.shadow = this.attachShadow ({ mode : 'closed' });
 			this.display() 
@@ -44,32 +45,22 @@ if (customElements.get('task-view') === undefined) {
 		 display(){
 			 //clear dom 
 			this.shadow.innerHTML = ''
+			// add template 
+			this.content = template.content.cloneNode(true);
+			this.shadow.appendChild(this.content)
 			
 			
-			// headline
-			var head = document.createElement("h1")
-			head.innerHTML = "Tasks" 
-			
-			this.shadow.appendChild(head)
-			// ADD Task button 
-			var button = document.createElement("button")
-			button.innerHTML = "add task "
-			button.addEventListener("click", (event)=>{
+			//open taskbox button 
+			this.shadow.querySelector("div >button").addEventListener("click", (event)=>{
+				// open or reopen the taskbox 
 				this.createTaskBox(event)
 
 			})
-			this.shadow.appendChild(button)
+			this.shadow.querySelector("div > button").removeAttribute("disabled")
 
-
-			
-			// Message element which shows the current database status (waiting, error, found x elements)
-			var div = document.createElement("div")
-			div.setAttribute("id","message")
-			div.innerHTML = "Wait for Server data ..." 
-			
-			this.shadow.appendChild(div) 
 			
 			
+			// create tasklist 
 			this.createTasklist() 
 			
 			}
@@ -92,7 +83,7 @@ if (customElements.get('task-view') === undefined) {
 					}
 					
 					/* set statuses */ 
-					var task_box = document.querySelector("task-box")
+					var task_box = this.shadow.querySelector("task-box")
 					task_box.setStatuseslist(statuses)
 					
 					
@@ -104,7 +95,7 @@ if (customElements.get('task-view') === undefined) {
 				
 				}else{
 					// just reopen it; its just hidden 
-					var task_box = document.querySelector("task-box")
+					var task_box = this.shadow.querySelector("task-box")
 					task_box.show() 
 				}
 				
@@ -119,7 +110,7 @@ if (customElements.get('task-view') === undefined) {
 							}
 	
 						
-						var tasklist = document.querySelector("task-list");		
+						var tasklist = this.shadow.querySelector("task-list");		
 						
 						/* get statuses from database */ 
 						var statuses = await this.getStatusesFromDb()
