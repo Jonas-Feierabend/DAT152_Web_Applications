@@ -3,10 +3,12 @@
  */
 
 const template = document.createElement("template");
-/* 			 <link rel="stylesheet" type="text/css"
-			 href="${import.meta.url.match(/.*\//)[0]}/taskbox.css"/>*/ 
-			template.innerHTML = `
-
+// TODO: css file 
+template.innerHTML = `
+						 <link rel="stylesheet" type="text/css"
+			 href="${import.meta.url.match(/.*\//)[0]}/taskbox.css"/>
+			 
+			 
 			 <dialog>
 			 <!-- Modal content -->
 			 <span>&times;</span>
@@ -21,29 +23,33 @@ const template = document.createElement("template");
 			 <p><button type="submit">Add task</button></p>
 			 </dialog>
 			`;
-			
+	
+
 class TaskBox extends HTMLElement {
 	
 	
 		constructor() {
+			// create the element 
             super();
             this.shadow = this.attachShadow ({ mode : 'open' });
 			this.content = template.content.cloneNode(true);
-			const path = import.meta.url.match(/.*\//)[0];
 			this.shadow.appendChild(this.content)
 			
-			this.shadow.querySelector("dialog").show()
+			
+			// make it visible 
+			this.show() 
 
+
+			// doesnt need callback from parent 
 			this.addCloseCallback() 
 
-			
+			// initialize 
 			this.possibleStatuses = []
-			
-	
+		
 
         }
 
-        
+        /* when user clicks on x */ 
         addCloseCallback(){
 			this.shadow.querySelector("span").addEventListener("click", (event)=>{
 				this.close()
@@ -53,17 +59,40 @@ class TaskBox extends HTMLElement {
 		}
 		
 		close() {
-			var dialog = document.querySelector("task-box").shadowRoot.firstChild.nextSibling
+			var dialog = this.shadow.querySelector("dialog")
 			dialog.close() 
 		}
 		
 		
 		show(){
-			/* aktuell in  tasklist.createTaskBox  implementiert */
+			var dialog = this.shadow.querySelector("dialog")
+			dialog.show() 
 		}
 		
-		 newtaskCallback(callback){
-			 /* auch aktuell in tasklist implementiert in closeTaskBox*/ 
+		
+		addNewTaskCallback(callback){
+			console.log("add new taysk callback ")
+			 var addTaskButton = this.shadow.querySelector("dialog > p > button")
+				
+			
+			 addTaskButton.addEventListener("click", (event)=>{
+				var title = this.shadow.querySelector("dialog > div > div > input").value
+				var status = this.shadow.querySelector("dialog > div > div > select").value
+				
+				var task = {"title":title, "status":status}
+				this.newtaskCallback(task)
+				callback(task) 
+				
+
+
+			})
+		}
+		
+		/* when user click on add task */ 
+		 newtaskCallback(task){
+			console.log(`Have '${task.title}' with status ${task.status}.`);
+			 this.close();
+
 		 }
 		
 		setStatuseslist(allstatuses) {

@@ -1,5 +1,6 @@
 /**
  * api: http://localhost:8080/TaskServices/api/services/allstatuses
+ * communication: https://www.freecodecamp.org/news/how-to-communicate-between-components-b48ef70bf913/
  */
 
   import TaskBox from "./TaskBox.js"
@@ -44,7 +45,7 @@ if (customElements.get('task-view') === undefined) {
 			
 			var div = document.createElement("div")
 			div.setAttribute("id","message")
-			div.innerHTML = "warten auf server data (aktuell einfach fixtext)" 
+			div.innerHTML = "Wait for Server data ..." 
 			
 			this.shadow.appendChild(div) 
 			
@@ -58,51 +59,34 @@ if (customElements.get('task-view') === undefined) {
 
 				
 				if (customElements.get('task-box') === undefined) {
+					// create the task box 
 					this.TaskBox = customElements.define('task-box', TaskBox.TaskBox);
-					var closeButton = document.querySelector("task-box").shadowRoot.firstChild.nextSibling.lastChild.previousSibling.firstChild
-					closeButton.addEventListener("click",(event)=>{
-					this.closeTaskbox(event)})
-					
+	
 					/* get statuses from database */ 
 					var statuses = await this.getStatusesFromDb()
 					if(statuses == -1){
 						statuses = ["Database Error"]
 					}
+					
+					/* set statuses */ 
 					var task_box = document.querySelector("task-box")
 					task_box.setStatuseslist(statuses)
+					
+					
+					/* add new task callback */ 
+					task_box.addNewTaskCallback(this.addTaskToDb.bind(this))
 					
 					
 				
 				
 				}else{
-					var dialog = document.querySelector("task-box").shadowRoot.firstChild.nextSibling
-					dialog.showModal()
+					// just reopen it; its just hidden 
+					var task_box = document.querySelector("task-box")
+					task_box.show() 
 				}
 				
-				/*		this.setStatuseslist(["WAITING", "ACTIVE", "DONE"])*/ 
 		}
 	
-		closeTaskbox(event){
-			var button = event.target
-			var div = button.parentElement.previousSibling.previousSibling
-			var task_title = div.firstChild.nextSibling.nextSibling.nextSibling.firstChild.nextSibling.value 
-			
-			var status = div.firstChild.nextSibling.nextSibling.nextSibling.nextSibling.nextSibling.nextSibling.firstChild.value 
-			/*  [
-				 {
-				 id: 1,
-				 status: "WAITING",
-				 title: "Paint roof"
-				 },
-				 {*/ 
-			
-			var id = 1 /* TODO fixe id */ 
-			const tasklist = document.querySelector("task-list");
-			tasklist.showTask({id:id,status:status ,  title : task_title})
-			
-			
-			this.addTaskToDb({title:"my_title", status:"WAITING"})
-		}
 			
 			
 			
@@ -111,7 +95,7 @@ if (customElements.get('task-view') === undefined) {
 							customElements.define('task-list', TaskList.TaskList);	
 							}
 	
-			
+						
 						const tasklist = document.querySelector("task-list");
 						
 						
@@ -126,8 +110,12 @@ if (customElements.get('task-view') === undefined) {
 						
 						/* get tasks from db */ 
 						var tasks = await this.getTaskListFromDb() 
+						var showDatabaseStatus = this.shadow.querySelector("div")
 						if(tasks == -1 ){
+							showDatabaseStatus.innerHTML = "Database Error"
 							tasks = [{id: 1, status: 'Database Error', title: 'Database Error'}] 
+						}else{
+							showDatabaseStatus.innerHTML = "Found " + tasks.length + " tasks."
 						}
 						tasklist.tasklist = []
 						for (let t of tasks) {
@@ -153,7 +141,7 @@ if (customElements.get('task-view') === undefined) {
 					
 										this.deleteTaskInDb(id)
 													})
-						}
+						} 
 			}
 			
 		test(){
@@ -182,7 +170,6 @@ if (customElements.get('task-view') === undefined) {
 		}
 		
 		async getTaskListFromDb(){
-
 			var url = "../TaskServices/api/services/tasklist"
 			try{
 					const response = await fetch(url);
@@ -197,6 +184,7 @@ if (customElements.get('task-view') === undefined) {
 					}
 					
 			} catch (error) {
+	
     				console.error(`Download error: ${error.message}`);
     				return -1 
   					}
@@ -230,12 +218,12 @@ if (customElements.get('task-view') === undefined) {
 							if(responseData["responseStatus"] != true){
 								window.alert("Error while creating a new Task: responseStatus is false ")
 							}
+
 							
-							this.display() 
 						})	
 						
-					
-					
+					console.log(this)
+					this.display() 
 		
 		
 		
