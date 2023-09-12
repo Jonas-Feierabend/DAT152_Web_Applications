@@ -36,8 +36,7 @@ class TaskBox extends HTMLElement {
 			this.shadow.appendChild(this.content)
 			
 			
-			// make it visible 
-			this.show() 
+
 
 
 			// doesnt need callback from parent 

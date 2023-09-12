@@ -30,10 +30,12 @@ if (customElements.get('task-view') === undefined) {
 
         constructor() {
             super();
-
+			// get dataService url 
+			this.dataServiceUrl = this.getAttribute("data-serviceurl"); 
 
 			// Create a shadow DOM structure
 			this.shadow = this.attachShadow ({ mode : 'closed' });
+
 			this.display() 
 
 			}
@@ -43,25 +45,30 @@ if (customElements.get('task-view') === undefined) {
 		
 		
 		 display(){
+			 console.log("display in task view ")
+
 			 //clear dom 
 			this.shadow.innerHTML = ''
 			// add template 
 			this.content = template.content.cloneNode(true);
 			this.shadow.appendChild(this.content)
 			
-			
+
 			//open taskbox button 
 			this.shadow.querySelector("div >button").addEventListener("click", (event)=>{
 				// open or reopen the taskbox 
+				console.log("added event listener ")
 				this.createTaskBox(event)
 
 			})
 			this.shadow.querySelector("div > button").removeAttribute("disabled")
+			
 
 			
 			
 			// create tasklist 
 			this.createTasklist() 
+
 			
 			}
 		/** 
@@ -70,34 +77,26 @@ if (customElements.get('task-view') === undefined) {
 		 * its just hidden 
 		 * */	
 		async createTaskBox(event){
-
+				console.log("create taskbox")
 				
 				if (customElements.get('task-box') === undefined) {
 					// create the task box 
 					this.TaskBox = customElements.define('task-box', TaskBox.TaskBox);
-	
-					/* get statuses from database */ 
-					var statuses = await this.getStatusesFromDb()
-					if(statuses == -1){
-						statuses = ["Database Error"]
-					}
-					
-					/* set statuses */ 
-					var task_box = this.shadow.querySelector("task-box")
-					task_box.setStatuseslist(statuses)
-					
-					
-					/* add new task callback */ 
-					task_box.addNewTaskCallback(this.addTaskToDb.bind(this))
-					
-					
-				
-				
-				}else{
-					// just reopen it; its just hidden 
-					var task_box = this.shadow.querySelector("task-box")
-					task_box.show() 
 				}
+				/* get statuses from database */ 
+				var statuses = await this.getStatusesFromDb()
+				if(statuses == -1){
+					statuses = ["Database Error"]
+				}
+				
+				/* set statuses */ 
+				var task_box = this.shadow.querySelector("task-box")
+				task_box.setStatuseslist(statuses)
+				
+				task_box.show() 
+				/* add new task callback */ 
+				task_box.addNewTaskCallback(this.addTaskToDb.bind(this))
+					
 				
 		}
 	
@@ -160,7 +159,7 @@ if (customElements.get('task-view') === undefined) {
 		 */
 		async getStatusesFromDb(){
 
-			var url = "../TaskServices/api/services/allstatuses"
+			var url = this.dataServiceUrl + "TaskServices/api/services/allstatuses"
 			try{
 					const response = await fetch(url);
 					var dict = await response.json() 
@@ -186,7 +185,7 @@ if (customElements.get('task-view') === undefined) {
 		 * or the status from the db when succeding 
 		 */
 		async getTaskListFromDb(){
-			var url = "../TaskServices/api/services/tasklist"
+			var url = this.dataServiceUrl + "TaskServices/api/services/tasklist"
 			try{
 					const response = await fetch(url);
 					var dict = await response.json() 
@@ -215,7 +214,7 @@ if (customElements.get('task-view') === undefined) {
 		 */
 		async addTaskToDb(data){
 		
-					fetch("../TaskServices/api/services/task", {
+					fetch(this.dataServiceUrl + "TaskServices/api/services/task", {
 						  method: "POST",
 						  body: JSON.stringify({
 						    title: data["title"],
@@ -261,7 +260,7 @@ if (customElements.get('task-view') === undefined) {
 		async updateTaskInDb(data){
 			console.log("update: "+ data["id"]+ data["status"] )
 			var id = data["id"]
-			fetch("../TaskServices/api/services/task/"+id, {
+			fetch(this.dataServiceUrl + "TaskServices/api/services/task/"+id, {
 						  method: "PUT",
 						  body: JSON.stringify({
 						    status: data["status"],
@@ -301,7 +300,7 @@ if (customElements.get('task-view') === undefined) {
 		async deleteTaskInDb(id){
 			console.log("deleting: "+ id )
 			
-			fetch("../TaskServices/api/services/task/"+id, {
+			fetch(this.dataServiceUrl + "TaskServices/api/services/task/"+id, {
 						  method: "DELETE",
 				
 						  headers: {
