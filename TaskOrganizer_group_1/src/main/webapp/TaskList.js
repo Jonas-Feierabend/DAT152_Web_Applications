@@ -10,31 +10,27 @@
 class TaskList extends HTMLElement {
 
     constructor() {
-        super();
-	
-        /**
-         * Fill inn rest of code
-         */
 		// Create a shadow DOM structure
+        super();
 		this.shadow = this.attachShadow ({ mode : 'open' });
 
-		
+		// initialize 
 		this.tasklist = []
 		this.possibleStatuses = []
 		
-		this.display(); 
 		
-	
-
+		//display the tasklist 
+		this.display(); 
     }
     
     
     display(){
+		// clear dom 
 		this.shadow.innerHTML = ''
 		
 
 		
-		
+		// only show header when tasklist is not empty 
 		if(this.tasklist.length != 0){
 			
 			const table = document.createElement('table')
@@ -91,10 +87,6 @@ class TaskList extends HTMLElement {
 				}
 				select.setAttribute("id",e.id)
 				
-				/* 
-				select.addEventListener("change",(event)=>{
-					this.changestatusCallback(event)
-				})*/ 
 				td3.appendChild(select)
 
 				
@@ -104,11 +96,6 @@ class TaskList extends HTMLElement {
 				button.innerHTML = "Remove"
 
 				button.setAttribute("id",e.id)
-				/*
-				button.addEventListener("click", (event)=>{
-					this.deletetaskCallback(event)
-
-				})*/ 
 				td4.appendChild(button)
 				
 				
@@ -139,8 +126,6 @@ class TaskList extends HTMLElement {
 			this.shadow . appendChild ( table );
 			
 			
-		}else{
-
 		}
 		
 	}
@@ -161,29 +146,24 @@ class TaskList extends HTMLElement {
     }
 
     /**
-     * Add callback to run on change on change of status of a task, i.e. on change in the SELECT element
+     * Add callback to run on change of status of a task, i.e. on change in the SELECT element
      * @public
      * @param {function} callback
      */
-	
-
-    changestatusCallback(callback) {
-		/* wird nicht benutzt */ 
-        // Fill in code
-		var id = callback.target.id 
-		var val = callback.target.value
-		
-		var element = callback.target
-		var task_name = element.parentElement.previousElementSibling.previousElementSibling.innerHTML;
-
-		var response = confirm('Set ' +task_name+ ' to ' + val ) 
-		if(response){
-			console.log("updating "+task_name+ " to " + val)
-			this.updateTask({"id": id,"status": val})
+    changestatusCallback(callback) { // callback points back to TaskView.updateTaskInDb
+		var selects = this.shadow.querySelectorAll("select")
+		for (var element of selects){
+				element.addEventListener("change",(event)=>{
+										var id = event.target.id 
+										var val = event.target.value
+										var name = event.target.parentElement.parentElement.firstChild.innerHTML
+										 var check = confirm('Do you want to set ' +name + " to " + val + "?" ); 
+										if (check == true) {
+											callback({id:id, status:val})
+											}
+										this.display() 
+									})
 			}
-		else{
-			console.log("dont update")
-		}
 		
     }
 
@@ -192,11 +172,24 @@ class TaskList extends HTMLElement {
      * @public
      * @param {function} callback
      */
-    deletetaskCallback(callback) {
+    deletetaskCallback(callback) { //callback points back to TaskView.deleteTaskInDb()
         // Fill in code
-        // not used 
-        this.removeTask(callback.target.id)
+		var deleteButton = this.shadow.querySelectorAll("table > tr > td > button")
+		for (var element of deleteButton){
+		element.addEventListener("click",(event)=>{
+								var id = event.target.id 
+								var name = event.target.parentElement.parentElement.firstChild.innerHTML
+								 var check = confirm('Do you want to delete ' +name +"?" ); 
+								if (check == true) {
+										callback(id)
+										}
+								this.display() 
+							})
+		}
     }
+
+
+
 
     /**
      * Add task at top in list of tasks in the view
@@ -212,57 +205,6 @@ class TaskList extends HTMLElement {
     }
 
     /**
-     * Update the status of a task in the view
-     * @param {Object} task - Object with attributes {'id':taskId,'status':newStatus}
-     */
-    updateTask(task) {
-
-        // Fill in code
-        if(this.tasklist.length != 0 ){
-
-            var i = 0
-            for(var element of this.tasklist){
-
-				
-				
-				if(element.id == task.id){
-					var task_element = this.tasklist[i]
-					task_element.status = task.status 
-					this.tasklist[i] = task_element 
-					break 
-				}else{
-				i++
-				}
-			}
-			this.display()
-		}
-    }
-
-    /**
-     * Remove a task from the view
-     * @param {Integer} task - ID of task to remove
-     */
-    removeTask(id) {
-        // Fill in code
-        
-        if(this.tasklist.length != 0 ){
-        var i = 0
-        for(var element of this.tasklist){
-
-			
-			
-			if(element.id == id){
-				this.tasklist.splice(i,1)
-				break 
-			}else{
-			i++
-			}
-		}
-		this.display()
-		}
-    }
-
-    /**
      * @public
      * @return {Number} - Number of tasks on display in view
      */
@@ -271,57 +213,10 @@ class TaskList extends HTMLElement {
         return this.tasklist.length 
     }
     
-    getIdForNewTask(){
 
-		var id  = 0 
-		while(true){
-			var vergeben = false 
-			for (var element of this.tasklist){
-				if (element.id === id){
-					id++
-					vergeben = true 
-				}
-				
-			}
-			if(!vergeben){
-				break 
-			}
-			
-		}
-		return id 
-	}
 }
     
-/* 
-    customElements.define('task-list', TaskList);
-    
-    
-    const allstatuses = ["WAITING", "ACTIVE", "DONE"];
-    const tasks = [
-				 {
-				 id: 1,
-				 status: "WAITING",
-				 title: "Paint roof"
-				 },
-				 {
-				 id: 2,
-				 status: "ACTIVE",
-				 title: "Wash windows"
-				 },
-				 {
-				 id: 3,
-				 status: "DONE",
-				 title: "Wash flooer"
-				 }
-			];
-			
-		const tasklist = document.querySelector("task-list");
-		tasklist.setStatuseslist(allstatuses)
-		for (let t of tasks) {
-			tasklist.showTask(t)
-		}
-}
-*/ 
+
 
 
 export default{

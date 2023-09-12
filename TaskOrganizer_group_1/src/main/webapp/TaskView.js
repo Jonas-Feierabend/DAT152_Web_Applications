@@ -16,9 +16,6 @@ if (customElements.get('task-view') === undefined) {
         constructor() {
             super();
 		
-            /**
-             * Fill inn rest of code
-             */
 			// Create a shadow DOM structure
 			this.shadow = this.attachShadow ({ mode : 'closed' });
 			this.display() 
@@ -30,8 +27,10 @@ if (customElements.get('task-view') === undefined) {
 		
 		
 		 display(){
+			 //clear dom 
 			this.shadow.innerHTML = ''
 			
+			// ADD Task button 
 			var button = document.createElement("button")
 			button.innerHTML = "add task "
 			button.addEventListener("click", (event)=>{
@@ -42,7 +41,7 @@ if (customElements.get('task-view') === undefined) {
 
 
 			
-			
+			// Message element which shows the current database status (waiting, error, found x elements)
 			var div = document.createElement("div")
 			div.setAttribute("id","message")
 			div.innerHTML = "Wait for Server data ..." 
@@ -53,8 +52,11 @@ if (customElements.get('task-view') === undefined) {
 			this.createTasklist() 
 			
 			}
-			
-			
+		/** 
+		 * Creates the TaskBox element if it does not exists
+		 * if it already exists it just reopens it because
+		 * its just hidden 
+		 * */	
 		async createTaskBox(event){
 
 				
@@ -101,6 +103,7 @@ if (customElements.get('task-view') === undefined) {
 						
 						/* get statuses from database */ 
 						var statuses = await this.getStatusesFromDb()
+						// error handling in case of db errors 
 						if(statuses == -1){
 							statuses = ["Database Error"]
 						}
@@ -111,43 +114,36 @@ if (customElements.get('task-view') === undefined) {
 						/* get tasks from db */ 
 						var tasks = await this.getTaskListFromDb() 
 						var showDatabaseStatus = this.shadow.querySelector("div")
+						
+						// error handling if there is a db error 
 						if(tasks == -1 ){
 							showDatabaseStatus.innerHTML = "Database Error"
 							tasks = [{id: 1, status: 'Database Error', title: 'Database Error'}] 
 						}else{
 							showDatabaseStatus.innerHTML = "Found " + tasks.length + " tasks."
 						}
+						// fill tasklist with statuses 
 						tasklist.tasklist = []
 						for (let t of tasks) {
 							tasklist.showTask(t)
 						}
 						
-						/* add event listener to select */  
-						var selects = tasklist.shadowRoot.querySelectorAll("select")
-						for (var element of selects){
-								element.addEventListener("change",(event)=>{
-											var id = event.target.id 
-											var val = event.target.value
-										this.updateTaskInDb({id:id, status: val})	
-													})
-						}
+
 						
 						
-						/* add event listener to remove button*/ 
-						var buttons = tasklist.shadowRoot.querySelectorAll("button")
-						for (var element of buttons){
-								element.addEventListener("click",(event)=>{
-										var id = event.target.id 
-					
-										this.deleteTaskInDb(id)
-													})
-						} 
+						/* add remove callback */ 
+						tasklist.deletetaskCallback(this.deleteTaskInDb.bind(this))
+						
+						/* add change callback */ 
+						tasklist.changestatusCallback(this.updateTaskInDb.bind(this)) 
 			}
 			
-		test(){
-			console.log("in task view ")
-		}
-			
+		/**
+		 * Gets Statuses from db
+		 * no params 
+		 * returns -1 in case of error 
+		 * or the status from the db when succeding 
+		 */
 		async getStatusesFromDb(){
 
 			var url = "../TaskServices/api/services/allstatuses"
@@ -168,7 +164,13 @@ if (customElements.get('task-view') === undefined) {
     				return -1 
   					}
 		}
-		
+
+		/**
+		 * Gets Tasklist from db
+		 * no params 
+		 * returns -1 in case of error 
+		 * or the status from the db when succeding 
+		 */
 		async getTaskListFromDb(){
 			var url = "../TaskServices/api/services/tasklist"
 			try{
@@ -190,7 +192,13 @@ if (customElements.get('task-view') === undefined) {
   					}
 		}
 		
-		
+		/**
+		 * Adds a task to the db 
+		 * Takes an object with title and status 
+		 * e.g {title:"test":status:"test"}]
+		 * status must be a valid word or else the database will complain 
+		 * returns nothing but will pop up an alert in case of error 
+		 */
 		async addTaskToDb(data){
 		
 					fetch("../TaskServices/api/services/task", {
@@ -205,7 +213,7 @@ if (customElements.get('task-view') === undefined) {
 					}).then((response) => {
 						
 							if (!response.ok) {
-							      // Fehlerbehandlung für nicht erfolgreiche Antworten
+							      // Error handling 
 							      window.alert("Error while creating a new Task, Probably you have used a wrong status")
 							      throw new Error("HTTP-Fehler, Statuscode: " + response.status);
 							      
@@ -219,17 +227,22 @@ if (customElements.get('task-view') === undefined) {
 								window.alert("Error while creating a new Task: responseStatus is false ")
 							}
 
-							
+							this.display() 
 						})	
 						
-					console.log(this)
-					this.display() 
+					
 		
 		
 		
 			
 		}
-		
+		/**
+		 * Updates a task in the db 
+		 * Takes an object with id and status 
+		 * e.g {id:1:status:"test"}]
+		 * status must be a valid word or else the database will complain 
+		 * returns nothing but will pop up an alert in case of error  
+		 */	
 		
 		async updateTaskInDb(data){
 			console.log("update: "+ data["id"]+ data["status"] )
@@ -265,7 +278,12 @@ if (customElements.get('task-view') === undefined) {
 			
 		}
 		
-		
+		/**
+		 * Deletes a task from the db 
+		 * Takes an id
+		 * e.g 1
+		 * returns nothing but will pop up an alert in case of error 
+		 */
 		async deleteTaskInDb(id){
 			console.log("deleting: "+ id )
 			
