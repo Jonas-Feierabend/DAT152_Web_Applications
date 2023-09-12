@@ -36,18 +36,8 @@ if (customElements.get('task-view') === undefined) {
 			// Create a shadow DOM structure
 			this.shadow = this.attachShadow ({ mode : 'closed' });
 
-			this.display() 
-
-			}
-			
-			
-			
-		
-		
-		 display(){
-			 console.log("display in task view ")
-
-			 //clear dom 
+	
+			//clear dom 
 			this.shadow.innerHTML = ''
 			// add template 
 			this.content = template.content.cloneNode(true);
@@ -61,17 +51,15 @@ if (customElements.get('task-view') === undefined) {
 				this.createTaskBox(event)
 
 			})
-			this.shadow.querySelector("div > button").removeAttribute("disabled")
-			
-
-			
 			
 			// create tasklist 
 			this.createTasklist() 
-
-			
 			}
-		/** 
+			
+			
+			
+	
+					/** 
 		 * Creates the TaskBox element if it does not exists
 		 * if it already exists it just reopens it because
 		 * its just hidden 
@@ -138,15 +126,23 @@ if (customElements.get('task-view') === undefined) {
 							tasklist.showTask(t)
 						}
 						
-						tasklist.display() 
+						
 						
 						
 						/* add remove callback */ 
-						tasklist.deletetaskCallback(this.deleteTaskInDb.bind(this))
+						//tasklist.deletetaskCallback(this.deleteTaskInDb.bind(this))
 						
 						/* add change callback */ 
-						tasklist.changestatusCallback(this.updateTaskInDb.bind(this)) 
+						//tasklist.changestatusCallback(this.updateTaskInDb.bind(this)) 
 						
+						
+						tasklist.addCallbacks(this.deleteTaskInDb.bind(this),this.updateTaskInDb.bind(this))
+						console.log("hi")
+						tasklist.display() 
+						console.log("hi2")
+						
+						/* user can now add attributes*/ 
+						this.shadow.querySelector("div > button").removeAttribute("disabled")
 						
 						
 			}
@@ -239,8 +235,9 @@ if (customElements.get('task-view') === undefined) {
 							if(responseData["responseStatus"] != true){
 								window.alert("Error while creating a new Task: responseStatus is false ")
 							}
+	
 
-							this.display() 
+					
 						})	
 						
 					
@@ -285,7 +282,7 @@ if (customElements.get('task-view') === undefined) {
 								window.alert("Error while updating a Task: responseStatus is false ")
 							}
 							
-							this.display() 
+							
 						})	
 			
 			
@@ -323,7 +320,7 @@ if (customElements.get('task-view') === undefined) {
 								window.alert("Error while Deleting a Task: responseStatus is false ")
 							}
 							
-							this.display() 
+						
 						})	
 		}
 		

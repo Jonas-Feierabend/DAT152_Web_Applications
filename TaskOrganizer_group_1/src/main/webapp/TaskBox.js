@@ -54,6 +54,13 @@ class TaskBox extends HTMLElement {
 				this.close()
 
 			})
+			// i have decided to only add the listener to the shadow. therefore a
+			// keydown is not recognized when the user clicked somewhere else before 
+			this.shadow.addEventListener("keydown",(event) =>{
+				if(event.key === "Escape"){
+				this.close() 
+				}
+			})
 
 		}
 		

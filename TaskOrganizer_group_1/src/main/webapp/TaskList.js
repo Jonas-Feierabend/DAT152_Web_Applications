@@ -18,10 +18,13 @@ class TaskList extends HTMLElement {
 		this.tasklist = []
 		this.possibleStatuses = []
 		
-		
-		//display the tasklist 
-		this.display(); 
+		this.setter = "unsetted "
+
     }
+    addCallbacks(deleteCallback,updateCallback){
+		this.deletetaskCallbackVar = deleteCallback
+		this.updateCallback = updateCallback
+	}
     
     
     display(){
@@ -123,10 +126,13 @@ class TaskList extends HTMLElement {
 			
 			
 			table.appendChild(tr)
-			this.shadow . appendChild ( table );
+			this.shadow.appendChild ( table );
 			
 			
 		}
+		
+		this.changestatusCallback(this.updateCallback)
+		this.deletetaskCallback(this.deletetaskCallbackVar)
 		
 	}
 	
@@ -141,7 +147,7 @@ class TaskList extends HTMLElement {
 		this.possibleStatuses[0] = "choose"
         this.possibleStatuses = this.possibleStatuses.concat(allstatuses)
 
-        this.display()
+        
 
     }
 
@@ -159,7 +165,9 @@ class TaskList extends HTMLElement {
 										var name = event.target.parentElement.parentElement.firstChild.innerHTML
 										 var check = confirm('Do you want to set ' +name + " to " + val + "?" ); 
 										if (check == true) {
-											callback({id:id, status:val})
+											var data = {id:id, status:val}
+											callback(data)
+											this.updateTask(data)
 											}
 							
 									})
@@ -174,6 +182,7 @@ class TaskList extends HTMLElement {
      */
     deletetaskCallback(callback) { //callback points back to TaskView.deleteTaskInDb()
         // Fill in code
+
 		var deleteButton = this.shadow.querySelectorAll("table > tr > td > button")
 		for (var element of deleteButton){
 		element.addEventListener("click",(event)=>{
@@ -181,7 +190,10 @@ class TaskList extends HTMLElement {
 								var name = event.target.parentElement.parentElement.firstChild.innerHTML
 								 var check = confirm('Do you want to delete ' +name +"?" ); 
 								if (check == true) {
+										console.log("delete event listener ausgeführt")
 										callback(id)
+										this.removeTask(id)
+										
 										}
 			
 							})
@@ -199,9 +211,8 @@ class TaskList extends HTMLElement {
     showTask(task) {
         // Fill in code
         this.tasklist.unshift(task)
-
-
-        this.display(); 
+ 
+  
     }
 
     /**
@@ -211,6 +222,58 @@ class TaskList extends HTMLElement {
     getNumtasks() {
         // Fill in code
         return this.tasklist.length 
+    }
+    
+     /**
+     * Update the status of a task in the view
+     * @param {Object} task - Object with attributes {'id':taskId,'status':newStatus}
+     */
+    updateTask(task) {
+
+        // Fill in code
+        if(this.tasklist.length != 0 ){
+
+            var i = 0
+            for(var element of this.tasklist){
+
+				
+				
+				if(element.id == task.id){
+					var task_element = this.tasklist[i]
+					task_element.status = task.status 
+					this.tasklist[i] = task_element 
+					break 
+				}else{
+				i++
+				}
+			}
+			
+		}
+		this.display() 
+    }
+    
+     /**
+     * Remove a task from the view
+     * @param {Integer} task - ID of task to remove
+     */
+    removeTask(id) {
+        // Fill in code
+        
+        if(this.tasklist.length != 0 ){
+        var i = 0
+        for(var element of this.tasklist){
+
+			
+			
+			if(element.id == id){
+				this.tasklist.splice(i,1)
+				break 
+			}else{
+			i++
+			}
+		}
+		this.display()
+		}
     }
     
 
