@@ -144,7 +144,7 @@ class TaskList extends HTMLElement {
     setStatuseslist(allstatuses) {
         // Fill in code
 		this.possibleStatuses = []
-		this.possibleStatuses[0] = "choose"
+		this.possibleStatuses[0] = "&ltModify&gt"
         this.possibleStatuses = this.possibleStatuses.concat(allstatuses)
 
         
@@ -167,7 +167,7 @@ class TaskList extends HTMLElement {
 										if (check == true) {
 											var data = {id:id, status:val}
 											callback(data)
-											this.updateTask(data)
+											
 											}
 							
 									})
@@ -192,8 +192,7 @@ class TaskList extends HTMLElement {
 								if (check == true) {
 										console.log("delete event listener ausgeführt")
 										callback(id)
-										this.removeTask(id)
-										
+				
 										}
 			
 							})

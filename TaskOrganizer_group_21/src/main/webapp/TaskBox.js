@@ -1,9 +1,10 @@
 /**
- * 
+ * TaskBox is used to create new tasks. It takes name + status and on click on add Task
+ * TaskView will receive a callback with the data 
  */
 
 const template = document.createElement("template");
-// TODO: css file 
+
 template.innerHTML = `
 						 <link rel="stylesheet" type="text/css"
 			 href="${import.meta.url.match(/.*\//)[0]}/taskbox.css"/>
@@ -35,9 +36,6 @@ class TaskBox extends HTMLElement {
 			this.content = template.content.cloneNode(true);
 			this.shadow.appendChild(this.content)
 			
-			
-
-
 
 			// doesnt need callback from parent 
 			this.addCloseCallback() 
@@ -63,19 +61,19 @@ class TaskBox extends HTMLElement {
 			})
 
 		}
-		
+		/* closes the dialog (hides it)*/
 		close() {
 			var dialog = this.shadow.querySelector("dialog")
 			dialog.close() 
 		}
 		
-		
+		/* shows the dialog again */ 
 		show(){
 			var dialog = this.shadow.querySelector("dialog")
 			dialog.show() 
 		}
 		
-		
+		/* callback when user clicks on add task -> callback to TaskView */ 
 		addNewTaskCallback(callback){
 			 var addTaskButton = this.shadow.querySelector("dialog > p > button")
 				
@@ -99,17 +97,21 @@ class TaskBox extends HTMLElement {
 			 this.close();
 
 		 }
-		
+		/* sets all statuses a new task can have -> fetched from the db */ 
 		setStatuseslist(allstatuses) {
+			// find select 
+			var select_element = this.shadow.querySelector("dialog > div > div > select")
 			
-			if(allstatuses == this.possibleStatuses){}
-			else{
+			// remove all options
+			
+			select_element.innerHTML = ""
+			
             // Fill in code
    			this.possibleStatuses = []
    			this.possibleStatuses[0] = "choose"
             this.possibleStatuses = this.possibleStatuses.concat(allstatuses)
 
-       		var select_element = this.shadow.querySelector("dialog > div > div > select")
+       		
        		
   
        		for (var e of this.possibleStatuses){
@@ -121,7 +123,7 @@ class TaskBox extends HTMLElement {
 				   select_element.appendChild(element)
 			   }
 
-        }
+        
         }
         
 

@@ -73,15 +73,15 @@ if (customElements.get('task-view') === undefined) {
 
 				}
 
-													/* get statuses from database */ 
-					var statuses = await this.getStatusesFromDb()
-					if(statuses == -1){
-						statuses = ["Database Error"]
-					}
-					
-					/* set statuses */ 
-					var task_box = this.shadow.querySelector("task-box")
-					task_box.setStatuseslist(statuses)
+				/* get statuses from database */ 
+				var statuses = await this.getStatusesFromDb()
+				if(statuses == -1){
+					statuses = ["Database Error"]
+				}
+				
+				/* set statuses */ 
+				var task_box = this.shadow.querySelector("task-box")
+				task_box.setStatuseslist(statuses)
 				task_box.show() 
 				/* add new task callback */ 
 				task_box.addNewTaskCallback(this.closeTaskBox.bind(this))
@@ -91,8 +91,11 @@ if (customElements.get('task-view') === undefined) {
 		
 		async closeTaskBox(data){
 			var tasklist = this.shadow.querySelector("task-list")
-			tasklist.showTask(data)
-			this.addTaskToDb(data)
+			var ret = this.addTaskToDb(data)
+			if(ret ==  1){
+				// success 
+				tasklist.showTask(data)
+			}
 		}
 	
 			
@@ -132,23 +135,16 @@ if (customElements.get('task-view') === undefined) {
 						for (let t of tasks) {
 							tasklist.showTask(t)
 						}
+
 						
-						
-						
-						
-						/* add remove callback */ 
-						//tasklist.deletetaskCallback(this.deleteTaskInDb.bind(this))
-						
-						/* add change callback */ 
-						//tasklist.changestatusCallback(this.updateTaskInDb.bind(this)) 
-						
-						
+						/* save callback functions in tasklist so they can be later reused */ 
 						tasklist.addCallbacks(this.deleteTaskInDb.bind(this),this.updateTaskInDb.bind(this))
-			
+						
+						/* initially display tasklist */ 
 						tasklist.display() 
 	
 						
-						/* user can now add attributes*/ 
+						/* user can now add tasks */ 
 						this.shadow.querySelector("div > button").removeAttribute("disabled")
 						
 						
@@ -162,7 +158,7 @@ if (customElements.get('task-view') === undefined) {
 		 */
 		async getStatusesFromDb(){
 
-			var url = this.dataServiceUrl + "TaskServices/api/services/allstatuses"
+			var url = this.dataServiceUrl + "/allstatuses"
 			try{
 					const response = await fetch(url);
 					var dict = await response.json() 
@@ -188,7 +184,7 @@ if (customElements.get('task-view') === undefined) {
 		 * or the status from the db when succeding 
 		 */
 		async getTaskListFromDb(){
-			var url = this.dataServiceUrl + "TaskServices/api/services/tasklist"
+			var url = this.dataServiceUrl + "/tasklist"
 			try{
 					const response = await fetch(url);
 					var dict = await response.json() 
@@ -217,7 +213,7 @@ if (customElements.get('task-view') === undefined) {
 		 */
 		async addTaskToDb(data){
 		
-					fetch(this.dataServiceUrl + "TaskServices/api/services/task", {
+					fetch(this.dataServiceUrl + "/task", {
 						  method: "POST",
 						  body: JSON.stringify({
 						    title: data["title"],
@@ -235,13 +231,15 @@ if (customElements.get('task-view') === undefined) {
 							      
 							   }; 
     
-							return response.json()
+							return response.json() 
 							
 					
 						}).then((responseData)=> {
 							if(responseData["responseStatus"] != true){
 								window.alert("Error while creating a new Task: responseStatus is false ")
+								return -1 
 							}
+							return 1 
 	
 
 					
@@ -264,7 +262,7 @@ if (customElements.get('task-view') === undefined) {
 		async updateTaskInDb(data){
 			console.log("update: "+ data["id"]+ data["status"] )
 			var id = data["id"]
-			fetch(this.dataServiceUrl + "TaskServices/api/services/task/"+id, {
+			fetch(this.dataServiceUrl + "/task/"+id, {
 						  method: "PUT",
 						  body: JSON.stringify({
 						    status: data["status"],
@@ -289,6 +287,8 @@ if (customElements.get('task-view') === undefined) {
 								window.alert("Error while updating a Task: responseStatus is false ")
 							}
 							
+							var taskList = this.shadow.querySelector("task-list")
+							taskList.updateTask(data)
 							
 						})	
 			
@@ -304,7 +304,7 @@ if (customElements.get('task-view') === undefined) {
 		async deleteTaskInDb(id){
 			console.log("deleting: "+ id )
 			
-			fetch(this.dataServiceUrl + "TaskServices/api/services/task/"+id, {
+			fetch(this.dataServiceUrl + "/task/"+id, {
 						  method: "DELETE",
 				
 						  headers: {
@@ -327,6 +327,8 @@ if (customElements.get('task-view') === undefined) {
 								window.alert("Error while Deleting a Task: responseStatus is false ")
 							}
 							
+							var taskList = this.shadow.querySelector("task-list")
+							taskList.removeTask(id)
 						
 						})	
 		}
