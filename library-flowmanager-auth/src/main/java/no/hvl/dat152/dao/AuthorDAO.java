@@ -141,9 +141,6 @@ public class AuthorDAO {
 	  return authors;
   }
   
-  
-
-  
 
 }
 

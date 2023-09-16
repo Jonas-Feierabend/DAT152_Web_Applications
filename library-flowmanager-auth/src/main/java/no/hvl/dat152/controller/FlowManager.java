@@ -25,13 +25,14 @@ public class FlowManager {
 		pages.put("updatebook", "/viewbook.jsp");
 		pages.put("viewbook", "/viewbook.jsp");
 		pages.put("viewbooks", "/viewbooks.jsp");
-		// new features
+		pages.put("loginform", "/login.jsp");
+		
+		
 		pages.put("addauthorform", "/addauthor.jsp");				//TODO
 		pages.put("addauthor", "/viewbooks.jsp");
 		pages.put("deletebookform","/deletebook.jsp"); 
 		pages.put("deletebookconfirm", "/viewbooks.jsp");			//TODO
 		pages.put("deletebook", "/viewbooks.jsp");
-		
 	}
 	
 	public String getPage(String cmd) {

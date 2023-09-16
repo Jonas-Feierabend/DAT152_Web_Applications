@@ -1,14 +1,20 @@
 package no.hvl.dat152.controller;
 
+import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import no.hvl.dat152.action.AddBookFormAction;
+import no.hvl.dat152.action.AddAuthorAction;
+import no.hvl.dat152.action.AddAuthorFormAction;
 import no.hvl.dat152.action.AddBookAction;
 import no.hvl.dat152.action.ControllerAction;
 import no.hvl.dat152.action.DeleteBookAction;
 import no.hvl.dat152.action.DeleteBookFormAction;
+import no.hvl.dat152.action.LoginAction;
+import no.hvl.dat152.action.LoginFormAction;
+import no.hvl.dat152.action.LogoutAction;
 import no.hvl.dat152.action.UpdateBookAction;
 import no.hvl.dat152.action.UpdateBookFormAction;
 import no.hvl.dat152.action.ViewBookAction;
@@ -23,11 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
-
-
-import no.hvl.dat152.action.AddAuthorAction;
-import no.hvl.dat152.action.AddAuthorFormAction;
+import no.hvl.dat152.action.*;
 
 /**
  * Servlet implementation class FrontController
@@ -55,7 +57,10 @@ public class FrontController extends HttpServlet {
 		actions.put("updatebook", new UpdateBookAction());
 		actions.put("viewbook", new ViewBookAction());
 		actions.put("viewbooks", new ViewBooksAction());
-		actions.put("deletebooks", new DeleteBookAction());
+		actions.put("loginform", new LoginFormAction());
+		actions.put("login", new LoginAction());
+		actions.put("logout", new LogoutAction());
+		
 		// new features
 		actions.put("addauthorform", new AddAuthorFormAction());	//TODO
 		actions.put("addauthor", new AddAuthorAction());			//TODO
@@ -68,7 +73,7 @@ public class FrontController extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		String cmd = request.getPathInfo();
         if(cmd == null)
@@ -76,24 +81,31 @@ public class FrontController extends HttpServlet {
         else {
         	cmd = cmd.substring(1);
         }
+        
         System.out.println("cmd = "+cmd);
         
         final ControllerAction action = actions.get(cmd);
         int success = action.execute(request, response);
         
         if(success == ControllerAction.SUCCESS) {
-        	String page = flowManager.getPage(cmd);
-        	request.getRequestDispatcher(page).forward(request, response);
+        	
+        	if(cmd.equals("login") || cmd.equals("logout")) {
+        		response.sendRedirect(request.getContextPath());
+        	} else {
+        		String page = flowManager.getPage(cmd);
+        		request.getRequestDispatcher(page).forward(request, response);
+        	}        	
         } else {
-        	request.getRequestDispatcher(request.getContextPath()).forward(request, response);
+        	// ....
         }
+        
 	}
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		doGet(request, response);
 	}
