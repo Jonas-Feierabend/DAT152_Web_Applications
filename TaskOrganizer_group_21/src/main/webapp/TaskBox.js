@@ -52,7 +52,7 @@ class TaskBox extends HTMLElement {
 				this.close()
 
 			})
-			// i have decided to only add the listener to the shadow. therefore a
+			// i have decided to only add the listener to the taskbox. therefore a
 			// keydown is not recognized when the user clicked somewhere else before 
 			this.shadow.addEventListener("keydown",(event) =>{
 				if(event.key === "Escape"){
@@ -83,7 +83,7 @@ class TaskBox extends HTMLElement {
 				var status = this.shadow.querySelector("dialog > div > div > select").value
 				
 				var task = {"title":title, "status":status}
-				this.newtaskCallback(task)
+				this.newtask(task)
 				callback(task) 
 				
 
@@ -92,7 +92,7 @@ class TaskBox extends HTMLElement {
 		}
 		
 		/* when user click on add task */ 
-		 newtaskCallback(task){
+		 newtask(task){
 			console.log(`Have '${task.title}' with status ${task.status}.`);
 			 this.close();
 

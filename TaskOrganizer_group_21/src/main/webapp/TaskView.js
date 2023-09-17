@@ -91,15 +91,34 @@ if (customElements.get('task-view') === undefined) {
 		
 		async closeTaskBox(data){
 			var tasklist = this.shadow.querySelector("task-list")
-			var ret = this.addTaskToDb(data)
-			if(ret ==  1){
+			var id = await this.addTaskToDb(data)
+			if(id !=  -1){
 				// success 
+				data["id"] =  id 
 				tasklist.showTask(data)
+				tasklist.changestatusCallback(this.updateTaskInDb.bind(this)) 
+				tasklist.deletetaskCallback(this.deleteTaskInDb.bind(this))  
+				this.updateShowNumberOfTasks() 
+			}
+			else{
+				console.log("no sucess")
 			}
 		}
 	
 			
-			
+		async updateShowNumberOfTasks(){
+						/* get tasks from db */ 
+						var tasks = await this.getTaskListFromDb() 
+						var showDatabaseStatus = this.shadow.querySelector("div")
+						
+						// error handling if there is a db error 
+						if(tasks == -1 ){
+							showDatabaseStatus.innerHTML = "Database Error"
+							tasks = [{id: 1, status: 'Database Error', title: 'Database Error'}] 
+						}else{
+							showDatabaseStatus.innerHTML = "Found " + tasks.length + " tasks."
+						}
+		}
 			
 		async createTasklist(){
 						if (customElements.get('task-list') === undefined) {
@@ -121,15 +140,8 @@ if (customElements.get('task-view') === undefined) {
 						
 						/* get tasks from db */ 
 						var tasks = await this.getTaskListFromDb() 
-						var showDatabaseStatus = this.shadow.querySelector("div")
-						
-						// error handling if there is a db error 
-						if(tasks == -1 ){
-							showDatabaseStatus.innerHTML = "Database Error"
-							tasks = [{id: 1, status: 'Database Error', title: 'Database Error'}] 
-						}else{
-							showDatabaseStatus.innerHTML = "Found " + tasks.length + " tasks."
-						}
+						this.updateShowNumberOfTasks() 
+				
 						// fill tasklist with statuses 
 						tasklist.tasklist = []
 						for (let t of tasks) {
@@ -137,12 +149,12 @@ if (customElements.get('task-view') === undefined) {
 						}
 
 						
-						/* save callback functions in tasklist so they can be later reused */ 
-						tasklist.addCallbacks(this.deleteTaskInDb.bind(this),this.updateTaskInDb.bind(this))
+
 						
 						/* initially display tasklist */ 
 						tasklist.display() 
-	
+						tasklist.changestatusCallback(this.updateTaskInDb.bind(this)) 
+						tasklist.deletetaskCallback(this.deleteTaskInDb.bind(this)) 
 						
 						/* user can now add tasks */ 
 						this.shadow.querySelector("div > button").removeAttribute("disabled")
@@ -213,7 +225,7 @@ if (customElements.get('task-view') === undefined) {
 		 */
 		async addTaskToDb(data){
 		
-					fetch(this.dataServiceUrl + "/task", {
+					return fetch(this.dataServiceUrl + "/task", {
 						  method: "POST",
 						  body: JSON.stringify({
 						    title: data["title"],
@@ -239,12 +251,13 @@ if (customElements.get('task-view') === undefined) {
 								window.alert("Error while creating a new Task: responseStatus is false ")
 								return -1 
 							}
-							return 1 
-	
-
+							else{
+								return responseData["task"]["id"]
+							}
+						}
+				
+						)	
 					
-						})	
-						
 					
 		
 		
@@ -286,10 +299,12 @@ if (customElements.get('task-view') === undefined) {
 							if(responseData["responseStatus"] != true){
 								window.alert("Error while updating a Task: responseStatus is false ")
 							}
-							
+							else{
 							var taskList = this.shadow.querySelector("task-list")
 							taskList.updateTask(data)
-							
+							taskList.changestatusCallback(this.updateTaskInDb.bind(this))
+							taskList.deletetaskCallback(this.deleteTaskInDb.bind(this)) }
+							this.updateShowNumberOfTasks() 
 						})	
 			
 			
@@ -325,10 +340,13 @@ if (customElements.get('task-view') === undefined) {
 						}).then((responseData)=> {
 							if(responseData["responseStatus"] != true){
 								window.alert("Error while Deleting a Task: responseStatus is false ")
-							}
+							}else{
 							
 							var taskList = this.shadow.querySelector("task-list")
 							taskList.removeTask(id)
+							taskList.changestatusCallback(this.updateTaskInDb.bind(this))
+							taskList.deletetaskCallback(this.deleteTaskInDb.bind(this)) }
+							this.updateShowNumberOfTasks() 
 						
 						})	
 		}

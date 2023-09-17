@@ -21,10 +21,7 @@ class TaskList extends HTMLElement {
 
 
     }
-    addCallbacks(deleteCallback,updateCallback){
-		this.deletetaskCallbackVar = deleteCallback
-		this.updateCallback = updateCallback
-	}
+
     
     
     display(){
@@ -66,6 +63,7 @@ class TaskList extends HTMLElement {
 			
 			table.appendChild(tr)
 			/* items */ 
+	
 			for( var e of this.tasklist){	
 				if(typeof e == 'undefined'){
 					continue 
@@ -131,8 +129,7 @@ class TaskList extends HTMLElement {
 			
 		}
 		
-		this.changestatusCallback(this.updateCallback)
-		this.deletetaskCallback(this.deletetaskCallbackVar)
+
 		
 	}
 	
