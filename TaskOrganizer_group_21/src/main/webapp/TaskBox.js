@@ -6,7 +6,7 @@
 const template = document.createElement("template");
 
 template.innerHTML = `
-						 <link rel="stylesheet" type="text/css"
+			<link rel="stylesheet" type="text/css"
 			 href="${import.meta.url.match(/.*\//)[0]}/taskbox.css"/>
 			 
 			 
@@ -108,7 +108,7 @@ class TaskBox extends HTMLElement {
 			
             // Fill in code
    			this.possibleStatuses = []
-   			this.possibleStatuses[0] = "choose"
+   			this.possibleStatuses[0] = "&ltModify&gt"
             this.possibleStatuses = this.possibleStatuses.concat(allstatuses)
 
        		
