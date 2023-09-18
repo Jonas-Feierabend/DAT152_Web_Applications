@@ -84,7 +84,7 @@ if (customElements.get('task-view') === undefined) {
 				task_box.setStatuseslist(statuses)
 				task_box.show() 
 				/* add new task callback */ 
-				task_box.addNewTaskCallback(this.closeTaskBox.bind(this))
+				task_box.newtaskCallback(this.closeTaskBox.bind(this))
 					
 				
 		}
@@ -99,6 +99,7 @@ if (customElements.get('task-view') === undefined) {
 				tasklist.changestatusCallback(this.updateTaskInDb.bind(this)) 
 				tasklist.deletetaskCallback(this.deleteTaskInDb.bind(this))  
 				this.updateShowNumberOfTasks() 
+				location.reload();
 			}
 			else{
 				console.log("no sucess")
@@ -305,6 +306,7 @@ if (customElements.get('task-view') === undefined) {
 							taskList.changestatusCallback(this.updateTaskInDb.bind(this))
 							taskList.deletetaskCallback(this.deleteTaskInDb.bind(this)) }
 							this.updateShowNumberOfTasks() 
+							location.reload();
 						})	
 			
 			
@@ -347,6 +349,7 @@ if (customElements.get('task-view') === undefined) {
 							taskList.changestatusCallback(this.updateTaskInDb.bind(this))
 							taskList.deletetaskCallback(this.deleteTaskInDb.bind(this)) }
 							this.updateShowNumberOfTasks() 
+							location.reload();
 						
 						})	
 		}

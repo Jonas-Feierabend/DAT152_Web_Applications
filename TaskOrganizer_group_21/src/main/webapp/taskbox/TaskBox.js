@@ -74,7 +74,7 @@ class TaskBox extends HTMLElement {
 		}
 		
 		/* callback when user clicks on add task -> callback to TaskView */ 
-		addNewTaskCallback(callback){
+		newtaskCallback(callback){
 			 var addTaskButton = this.shadow.querySelector("dialog > p > button")
 				
 			
