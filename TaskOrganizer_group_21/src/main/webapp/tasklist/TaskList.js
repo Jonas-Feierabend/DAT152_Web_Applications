@@ -2,7 +2,31 @@
   * TaskList
   * Manage view with list of tasks
   */
- import TaskBox from "./TaskBox.js"
+const template = document.createElement("template");
+template.innerHTML = `
+    <link rel="stylesheet" type="text/css" href="${import.meta.url.match(/.*\//)[0]}/tasklist.css"/>
+
+    <div id="tasklist"></div>`;
+
+const tasktable = document.createElement("template");
+tasktable.innerHTML = `
+    <table>
+        <thead><tr><th>Task</th><th>Status</th></tr></thead>
+        <tbody></tbody>
+    </table>`;
+
+const taskrow = document.createElement("template");
+taskrow.innerHTML = `
+    <tr>
+        <td></td>
+        <td></td>
+        <td>
+            <select>
+                <option value="0" selected>&lt;Modify&gt;</option>
+            </select>
+        </td>
+        <td><button type="button">Remove</button></td>
+    </tr>`;
 
 
 
@@ -27,104 +51,41 @@ class TaskList extends HTMLElement {
     display(){
 		// clear dom 
 		this.shadow.innerHTML = ''
-		
+		this.content = template.content.cloneNode(true);
+		this.shadow.appendChild(this.content)
 
 		
 		// only show header when tasklist is not empty 
 		if(this.tasklist.length != 0){
+		
+			const table_template = tasktable.content.cloneNode(true)
+			this.shadow.appendChild ( table_template );
 			
-			const table = document.createElement('table')
 
-			/* header */ 
-			var tr = document.createElement("tr");
-			var td1 = document.createElement("td")
-			td1.innerHTML = "Task"
-			var td2 = document.createElement("td")
-			td2.innerHTML = "Status"
-			
-			tr.appendChild(td1)
-			tr.appendChild(td2)
-			
-			table.appendChild(tr)
-			
-			
-			/* line*/ 
-			var tr = document.createElement("tr")
-			
-			
-			var td = document.createElement("td")
-			td.setAttribute("colspan",4)
-			var hr = document.createElement("hr")
-			td.appendChild(hr)
-			
-			
-			tr.appendChild(td)
-			
-			
-			table.appendChild(tr)
+			const table = this.shadow.querySelector("table > tbody")
 			/* items */ 
-	
-			for( var e of this.tasklist){	
-				if(typeof e == 'undefined'){
-					continue 
-				}
-				var tr = document.createElement('tr');
 			
-
-
-				var td1 = document.createElement("td")
-				td1.innerHTML = e.title
+			
+			for (var e of this.tasklist){
+				var taskrow_template = taskrow.content.cloneNode(true)
+				taskrow_template.querySelector("tr > td").innerHTML = e.title
+				taskrow_template.querySelector("tr > td").nextSibling.nextSibling.innerHTML = e.status 
 				
-				var td2 = document.createElement("td")
-				td2.innerHTML = e.status 
-				
-				var td3 = document.createElement("td")
-				var select = document.createElement('select')
+				var select = taskrow_template.querySelector("tr > td > select")
 				for (var el of this.possibleStatuses){
-
 					var opt = document.createElement("option")
 					opt.innerHTML = el 
+					opt.value = el
 					select.appendChild(opt)
 				}
 				select.setAttribute("id",e.id)
 				
-				td3.appendChild(select)
-
+				var button = taskrow_template.querySelector("tr>td>button")
 				
-				
-				var td4 = document.createElement("td")
-				var button = document.createElement("button")
-				button.innerHTML = "Remove"
-
 				button.setAttribute("id",e.id)
-				td4.appendChild(button)
-				
-				
-				tr.appendChild(td1)
-				tr.appendChild(td2)
-				tr.appendChild(td3)
-				tr.appendChild(td4)
-				
-				
-				table.appendChild(tr)
-				
+				table.appendChild(taskrow_template)
 			}
-							
-			/* line*/ 
-			var tr = document.createElement("tr")
-			
-			
-			var td = document.createElement("td")
-			td.setAttribute("colspan",4)
-			var hr = document.createElement("hr")
-			td.appendChild(hr)
-			
-			
-			tr.appendChild(td)
-			
-			
-			table.appendChild(tr)
-			this.shadow.appendChild ( table );
+		
 			
 			
 		}
@@ -141,7 +102,6 @@ class TaskList extends HTMLElement {
     setStatuseslist(allstatuses) {
         // Fill in code
 		this.possibleStatuses = []
-		this.possibleStatuses[0] = "&ltModify&gt"
         this.possibleStatuses = this.possibleStatuses.concat(allstatuses)
 
         
@@ -159,10 +119,17 @@ class TaskList extends HTMLElement {
 				element.addEventListener("change",(event)=>{
 										var id = event.target.id 
 										var val = event.target.value
-										var name = event.target.parentElement.parentElement.firstChild.innerHTML
+																
+										var name = event.target.parentElement.parentElement.firstChild.nextSibling.innerHTML 
+						
 										 var check = confirm('Do you want to set ' +name + " to " + val + "?" ); 
+										if(val == 0 ){
+											window.alert("You cant chose &ltmodify &gt")
+											check = false 
+										}
 										if (check == true) {
 											var data = {id:id, status:val}
+											console.log(data)
 											callback(data)
 											
 											}
@@ -180,11 +147,11 @@ class TaskList extends HTMLElement {
     deletetaskCallback(callback) { //callback points back to TaskView.deleteTaskInDb()
         // Fill in code
 
-		var deleteButton = this.shadow.querySelectorAll("table > tr > td > button")
+		var deleteButton = this.shadow.querySelectorAll("table >tbody> tr > td > button")
 		for (var element of deleteButton){
 		element.addEventListener("click",(event)=>{
 								var id = event.target.id 
-								var name = event.target.parentElement.parentElement.firstChild.innerHTML
+								var name = event.target.parentElement.parentElement.firstChild.nextSibling.innerHTML
 								 var check = confirm('Do you want to delete ' +name +"?" ); 
 								if (check == true) {
 										console.log("delete event listener ausgeführt")

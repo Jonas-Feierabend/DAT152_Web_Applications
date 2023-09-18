@@ -3,8 +3,8 @@
  * communication: https://www.freecodecamp.org/news/how-to-communicate-between-components-b48ef70bf913/
  */
 
-  import TaskBox from "./TaskBox.js"
-import TaskList from "./TaskList.js";
+  import TaskBox from "../taskbox/TaskBox.js"
+import TaskList from "../tasklist/TaskList.js";
 
   
 const template = document.createElement("template");
