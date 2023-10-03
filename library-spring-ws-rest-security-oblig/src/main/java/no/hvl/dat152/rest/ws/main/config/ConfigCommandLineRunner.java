@@ -10,20 +10,16 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import no.hvl.dat152.rest.ws.exceptions.AuthorNotFoundException;
 import no.hvl.dat152.rest.ws.model.Author;
 import no.hvl.dat152.rest.ws.model.Book;
 import no.hvl.dat152.rest.ws.model.Order;
-import no.hvl.dat152.rest.ws.model.Role;
 import no.hvl.dat152.rest.ws.model.User;
 import no.hvl.dat152.rest.ws.repository.AuthorRepository;
 import no.hvl.dat152.rest.ws.repository.BookRepository;
-import no.hvl.dat152.rest.ws.repository.RoleRepository;
 import no.hvl.dat152.rest.ws.repository.UserRepository;
 import no.hvl.dat152.rest.ws.service.AuthorService;
 
@@ -44,15 +40,11 @@ class ConfigCommandLineRunner implements CommandLineRunner  {
   @Autowired
   UserRepository userRepository;
   
-  @Autowired
-  RoleRepository roleRepository;
-  
   @Override
   public void run(String... args) throws Exception {
 	  
 	  authorRepository.saveAll(createDefaultAuthors());
 	  bookRepository.saveAll(creatDefaultBooks());
-	  roleRepository.saveAll(createDefaultRoles());
 	  userRepository.saveAll(createDefaultUsersPlusOrders());
    
   }
@@ -106,67 +98,24 @@ class ConfigCommandLineRunner implements CommandLineRunner  {
 	}
 	
 	private Iterable<User> createDefaultUsersPlusOrders(){
-		
-		BCryptPasswordEncoder pwdEncoder = new BCryptPasswordEncoder();
-		
 		List<User> users = new ArrayList<>();
 		
-		// user1 (roles = USER)
-		String robertPwd = pwdEncoder.encode("robert_pwd");
-		User user1 = new User("robert@email.com",robertPwd,"Robert", "Isaac");
+		// user1
+		User user1 = new User("Robert", "Isaac");
 		// orders
 		Order order1 = new Order("ghijk1234", LocalDate.now().plusWeeks(2));		
 		user1.addOrder(order1);
-		// add roles
-		Role role1 = roleRepository.findById(3).get();
-		user1.addRole(role1);
-		System.out.println("User = "+user1.getFirstname()+" Role = "+role1.getName());
 		
-		
-		//user2 (roles = ADMIN, USER)
-		String kristinPwd = pwdEncoder.encode("kristin_pwd");
-		User user2 = new User("kristin@email.com",kristinPwd,"Kristin", "Solberg");
-		// add order
+		//user2
+		User user2 = new User("Kristin", "Solberg");
 		Order order2_1 = new Order("abcde1234", LocalDate.now().plusWeeks(3));
 		user2.addOrder(order2_1);
-		// add roles
-		Role role2 = roleRepository.findById(2).get();
-		Role role3 = roleRepository.findById(3).get();
-		user2.addRole(role2);
-		user2.addRole(role3);
-		System.out.println("User = "+user2.getFirstname()+" Role = "+role2.getName()+", "+role3.getName());
-		
-		//user 3  (roles = SUPER_ADMIN, ADMIN, USER)
-		String tosinPwd = pwdEncoder.encode("berit_pwd");
-		User user3 = new User("berit@email.com", tosinPwd, "Berit", "Jørgensen");
-		// add roles
-		Role role31 = roleRepository.findById(1).get();
-		Role role32 = roleRepository.findById(2).get();
-		Role role33 = roleRepository.findById(3).get();
-		user3.addRole(role31);
-		user3.addRole(role32);
-		user3.addRole(role33);
-		System.out.println("User = "+user3.getFirstname()+" Role = "+role31.getName()+", "+role32.getName()+", "+role33.getName());
 		
 		users.add(user1);
 		users.add(user2);
-		users.add(user3);
 		
 		return users;
 		
-	}
-	
-	// we take the roles we have configured in our property file (application.properties)
-	@Value("#{'${user.resource.roles}'.split(',')}")
-	private List<String> userRoles;
-	
-	private Iterable<Role> createDefaultRoles(){
-		List<Role> roles = new ArrayList<>();
-		for(String role : userRoles) {
-			roles.add(new Role(role));
-		}
-		
-		return roles;
 	}
 
 }

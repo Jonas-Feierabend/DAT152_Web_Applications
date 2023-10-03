@@ -14,6 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import no.hvl.dat152.rest.ws.exceptions.OrderNotFoundException;
 import no.hvl.dat152.rest.ws.exceptions.UserNotFoundException;
 import no.hvl.dat152.rest.ws.model.Role;
 import no.hvl.dat152.rest.ws.model.User;
@@ -63,9 +64,10 @@ public class AuthService {
 	}
 	
 	public User findUserByEmail(String email) throws UserNotFoundException {
-		User user = userRepository.findByEmail(email)
-				.orElseThrow(() -> new UserNotFoundException("User with email: "+email+" does not exist!"));
-		
+		User user = userRepository.findByEmail(email); 
+			//	.orElseThrow(() -> new UserNotFoundException("User with email: "+email+" does not exist!"));
+		//.orElseThrow(()-> new OrderNotFoundException("Order with id: "+id+" not found in the order list!"));
+		//TODO 
 		return user;
 	}
 	

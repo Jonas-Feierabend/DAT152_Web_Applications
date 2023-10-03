@@ -1,7 +1,6 @@
 package no.hvl.dat152.rest.ws.model;
 
 
-
 import java.util.HashSet;
 import java.util.Set;
 
