@@ -17,7 +17,7 @@ import jakarta.persistence.Table;
  */
 @Entity
 @Table(name = "roles")
-public class Role{ 
+public class Role extends RepresentationModel<Role>{ 
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
