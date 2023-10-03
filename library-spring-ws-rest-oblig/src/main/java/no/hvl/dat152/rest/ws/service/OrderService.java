@@ -46,9 +46,9 @@ public class OrderService {
 	
 	public List<Order> findByExpiryDate(LocalDate expiry, Pageable page){
 		
-		// TODO
+		return (List<Order>) orderRepository.findByExpiryBefore(expiry, page); 
 		
-		return null;
+	
 	}
 	
 	public Order findOrder(Long id) throws OrderNotFoundException {

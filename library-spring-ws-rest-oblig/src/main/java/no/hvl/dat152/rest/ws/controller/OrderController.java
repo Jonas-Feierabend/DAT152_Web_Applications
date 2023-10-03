@@ -49,9 +49,10 @@ public class OrderController {
 			@RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "3") int size){
 		
-		// TODO
+		Pageable pageable = PageRequest.of(page,page+size);
+		return (ResponseEntity<Object>) orderService.findByExpiryDate(expiry, pageable); 
 		
-		return null;
+
 	}
 	
 	@GetMapping("/orders/{id}")
