@@ -33,7 +33,7 @@ public class OrderService {
 	
 	public void deleteOrder(Long id) throws OrderNotFoundException {
 
-		// TODO
+		orderRepository.deleteOrder(id);
 	}
 	
 	public List<Order> findAllOrders(){
@@ -61,7 +61,7 @@ public class OrderService {
 	
 	public Order updateOrder(Order order, Long id) throws OrderNotFoundException {
 		
-		// TODO
+		//orderRepository.updateOrder(id,order); 
 		
 		return null;			
 	}

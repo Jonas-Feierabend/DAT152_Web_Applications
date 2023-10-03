@@ -20,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -84,6 +85,21 @@ public class OrderController {
 		// TODO
 		
 		return new ResponseEntity<>("Order with id: '"+id+"' deleted!", HttpStatus.OK);
+	}
+	
+	@PostMapping("/orders")
+	public ResponseEntity<Object> createOrder( @RequestBody Order order) throws OrderNotFoundException{
+		
+		orderService.saveOrder(order); 
+		
+		return new ResponseEntity<>("Order with id:  created!", HttpStatus.OK);
+	}
+	
+	
+	@GetMapping("/orders/all")
+	public ResponseEntity<Object> getAllOrders(){
+		List<Order> orders = orderService.findAllOrders(); 
+		return new ResponseEntity<>(orders, HttpStatus.OK);	
 	}
 	
 }

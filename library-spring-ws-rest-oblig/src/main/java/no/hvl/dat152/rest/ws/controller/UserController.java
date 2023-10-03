@@ -28,6 +28,12 @@ import no.hvl.dat152.rest.ws.service.UserService;
 
 /**
  * @author tdoy
+ * create funktioniert
+ * updaet funktioniert nur für vorname, nachname
+ * delete funktioniert wenn kein foreign key 
+ * add order funktioneirt verlässt sich aber darauf das einfach überschrieben wird
+ *        also wenn eine id schon existiert und man saved dann wird einfach überschrieben
+ *        und genau so funktionierts 
  */
 @RestController
 @RequestMapping("/elibrary/api/v1")
@@ -102,7 +108,7 @@ public class UserController {
 	public ResponseEntity<Object> createUserOrders(@PathVariable("id") Long id, @RequestBody Order order) 
 			throws UserNotFoundException, OrderNotFoundException{
 		
-		// TODO
+		userService.createOrdersForUser(id, order); 
 		
 		return null;
 	}
