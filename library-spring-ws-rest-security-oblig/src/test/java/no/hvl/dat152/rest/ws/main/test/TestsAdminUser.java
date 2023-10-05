@@ -18,12 +18,7 @@ class TestsAdminUser {
 	
 	private String API_ROOT = "http://localhost:8090/elibrary/api/v1/admin";
 	
-	private String token = "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJiZXJpdEBlbWFpbC5jb20iLCJpc3MiOiJEQVQxNTItTGVjdHVyZXJAVERPWSIs"
-			+ "ImZpcnN0bmFtZSI6IkJlcml0IiwibGFzdG5hbWUiOiJKw7hyZ2Vuc2VuIiwicm9sZXMiOlsiU1VQRVJfQURNSU4iLCJVU0VSIiwiQURNSU"
-			+ "4iXSwiaWF0IjoxNjk2MjAwMTk3LCJleHAiOjE2OTYyODY1OTd9.eLWV51s4rtauq04wiB_ohBMdpfC7k3D9gHPpIqPUmFinV_VBvI0iuHT"
-			+ "ev4Xc7Sq5qiSV7aAG3abY96Hu-mG5r23EVFy1Ipwq8t_02-mCzvIcSh25TlcHWUtfzKqM2UPcAwnvZnpvjhDYyPUnKgTN42uZn-msSO0N3"
-			+ "zo8XT859Eylh2OsRWKla8UYXEz_GttR4cQ1--0-aIIAvOgYk8HmgriOIpQs4WuolzfLsMelk0xEo_C5vMv3XEpaWrKOOhjUl7GwqqkR7wT"
-			+ "_yISPlLHj28ZcUAgGbKa_R73Fm8br8tgwOaz_nHpi25Nf_VAlqeBKsb5Z8rykM1WVzb9Va242IA";
+	private String token = "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJiZXJpdEBlbWFpbC5jb20iLCJpc3MiOiJEQVQxNTItTGVjdHVyZXJAVERPWSIsImZpcnN0bmFtZSI6IkJlcml0IiwibGFzdG5hbWUiOiJKw7hyZ2Vuc2VuIiwicm9sZXMiOlsiQURNSU4iLCJVU0VSIiwiU1VQRVJfQURNSU4iXSwiaWF0IjoxNjk2NDk2OTY4LCJleHAiOjE2OTY5Mjg5Njh9.iT5NQLJrm3adqM5s1mWSg1rllyP-Alm9_SIldH1ppTz--zpT3xolQoOrOwf21whE4x8WCBTp9vWm-VU-C-5HYH4ZE7RKBN2M-ZVcAqer2QzMiibmrdlWbKwR4Xdtu-5Zsr-aG23jBlMcaASYjG7AJVbE9bsKA4c4-H9Gg0kHTfokDbaugosiPZCI4-MZR4RzF728KOuqsS6_J6hLs6RLhhJkmqaxku8oGRusEyWAgOKmwyDAQHDy3cj-oTKNFLy2aoD13Huw4is_2iQdUsjt7guGUKFdDsRVpT0wHw1B3mt5-GeCv9PwO17Hy33oUmyTraKuDg_GQC1J57nHEWY7lA";
 	
 	@DisplayName("JUnit test for @PutMapping(/users/{id}) endpoint")
 	@Test
