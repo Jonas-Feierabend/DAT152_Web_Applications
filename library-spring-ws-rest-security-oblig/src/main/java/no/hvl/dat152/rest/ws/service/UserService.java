@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import no.hvl.dat152.rest.ws.exceptions.UserNotFoundException;
 import no.hvl.dat152.rest.ws.model.Order;
 import no.hvl.dat152.rest.ws.model.User;
+import no.hvl.dat152.rest.ws.model.Role;
 import no.hvl.dat152.rest.ws.repository.UserRepository;
 
 /**
@@ -32,13 +33,13 @@ public class UserService {
 	
 	public void deleteUser(Long id) throws UserNotFoundException {
 		
-		// TODO
+		userRepository.deleteUser(id);
 	}
 	
 	public User updateUser(User user, Long id) throws UserNotFoundException {
 		
 		// TODO
-		
+		userRepository.updateUser(id,user.getFirstname(), user.getLastname()); 
 		return null;
 		
 	}
@@ -67,8 +68,14 @@ public class UserService {
 	
 	public User createOrdersForUser(Long id, Order order) throws UserNotFoundException{
 		
-		// TODO
+		// get user
+		User user = this.findUser(id); 
+		//updte user
+		user.addOrder(order);
+		this.saveUser(user); 
 		
 		return null;
 	}
+	
+	
 }

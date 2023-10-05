@@ -14,6 +14,7 @@ import no.hvl.dat152.rest.ws.model.User;
 import no.hvl.dat152.rest.ws.repository.RoleRepository;
 import no.hvl.dat152.rest.ws.repository.UserRepository;
 
+import no.hvl.dat152.rest.ws.service.UserService;
 /**
  * @author tdoy
  */
@@ -26,6 +27,9 @@ public class AdminUserService {
 	@Autowired
 	private RoleRepository roleRepository;
 	
+	@Autowired 
+	private UserService userService; 
+	
 	public User saveUser(User user) {
 		
 		user = userRepository.save(user);
@@ -33,18 +37,22 @@ public class AdminUserService {
 		return user;
 	}
 	
-	public User deleteUserRole(Long id, String role) throws UserNotFoundException {
+	public User deleteUserRole(Long id, String role_string) throws UserNotFoundException {
 		
-		// TODO
-		
-		return null;
+		User user = this.findUser(id);
+		Role role = new Role(role_string); 
+		user.removeRole(role);
+		userService.updateUser(user, id);
+		return user; 
 	}
 	
-	public User updateUserRole(Long id, String role) throws UserNotFoundException {
+	public User updateUserRole(Long id, String role_string) throws UserNotFoundException {
 		
-		// TODO
-		
-		return null;
+		User user = this.findUser(id);
+		Role role = new Role(role_string); 
+		user.addRole(role);
+		userService.updateUser(user, id); 
+		return user; 
 		
 	}
 	
