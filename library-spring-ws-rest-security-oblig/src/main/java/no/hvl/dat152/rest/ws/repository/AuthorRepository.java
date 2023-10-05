@@ -4,7 +4,6 @@
 package no.hvl.dat152.rest.ws.repository;
 
 
-import java.util.List;
 import java.util.Set;
 
 import org.springframework.data.jpa.repository.Modifying;
@@ -14,8 +13,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 import no.hvl.dat152.rest.ws.model.Author;
-import no.hvl.dat152.rest.ws.model.Author;
 import no.hvl.dat152.rest.ws.model.Book;
+
 /**
  * @author tdoy
  */

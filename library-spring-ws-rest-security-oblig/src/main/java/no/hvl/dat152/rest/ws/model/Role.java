@@ -3,8 +3,6 @@
  */
 package no.hvl.dat152.rest.ws.model;
 
-import org.springframework.hateoas.RepresentationModel;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -17,7 +15,7 @@ import jakarta.persistence.Table;
  */
 @Entity
 @Table(name = "roles")
-public class Role extends RepresentationModel<Role>{ 
+public class Role {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -8,6 +8,8 @@ import java.util.Set;
 
 import org.springframework.hateoas.RepresentationModel;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -16,16 +18,18 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import no.hvl.dat152.rest.ws.model.Role;
+
 
 /**
  * @author tdoy
  */
 @Entity
 @Table(name = "users")
-public class User extends RepresentationModel<User>{
+public class User extends RepresentationModel<User> {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -37,33 +41,34 @@ public class User extends RepresentationModel<User>{
 	@Column(nullable = false)
 	private String lastname;
 	
-	@Column(nullable = true)
-	private String eMail; 
+	@Column(nullable = false, length = 50, unique = true)
+	private String email;
 	
-	@Column(nullable = true)
-	private Set<Role> roles = new HashSet<>(); 
-	
-	@Column(nullable = true)
-	private String password ;
+	@Column(nullable = false, length = 64)
+	@JsonIgnore
+	private String password;
 	
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id", referencedColumnName = "userid")
+	@JoinColumn(name = "user_email", referencedColumnName = "email")
 	private Set<Order> orders = new HashSet<>();
+	
+	@ManyToMany
+	@JoinTable(
+			name = "user_roles",
+			joinColumns = @JoinColumn(name = "user_id"),
+			inverseJoinColumns = @JoinColumn(name = "role_id"))
+	private Set<Role> roles = new HashSet<>();
 
-	public User() {
-		//default
+	public User() {/*default*/}
+	
+	public User(String email, String password, String firstname, String lastname) {
+		this.email = email;
+		this.password = password;
+		this.firstname = firstname;
+		this.lastname = lastname;
 	}
 	
-	public User(String firstname, String lastname) {
-		this.firstname = firstname;
-		this.lastname = lastname;
-	}
-	public User(String Email, String Password, String firstname, String lastname) {
-		this.firstname = firstname;
-		this.lastname = lastname;
-		this.eMail = Email; 
-		//TODO password 
-	}
 	/**
 	 * @return the userid
 	 */
@@ -128,6 +133,56 @@ public class User extends RepresentationModel<User>{
 		orders.remove(order);
 	}
 	
+	/**
+	 * @return the email
+	 */
+	public String getEmail() {
+		return email;
+	}
+
+	/**
+	 * @param email the email to set
+	 */
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	
+	/**
+	 * @return the roles
+	 */
+	public Set<Role> getRoles() {
+		return roles;
+	}
+
+	/**
+	 * @param roles the roles to set
+	 */
+	public void setRoles(Set<Role> roles) {
+		this.roles = roles;
+	}
+	
+	public void addRole(Role role) {
+		this.roles.add(role);
+	}
+	
+	public void removeRole(Role role) {
+		this.roles.remove(role);
+	}
+
+	/**
+	 * @param password the password to set
+	 */
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	/**
+	 * @return the password
+	 */
+	public String getPassword() {
+		return password;
+	}
+	
 	@Override
     public final int hashCode() {
 		final int prime = 31;
@@ -156,35 +211,4 @@ public class User extends RepresentationModel<User>{
         return this.userid == other.userid;
 	}
 	
-	
-	public void setEmail(String email) {
-		this.eMail = email; 
-	}
-	
-	public String getEmail() {
-		return this.eMail; 
-	}
-	
-	public Set<Role> getRoles(){
-		return this.roles; 
-	}
-	
-	public void setRoles(Set<Role> roles) {
-		this.roles = roles ; 
-	}
-
-	public void addRole(Role _role) {
-		this.roles.add(_role) ; 
-		
-	}
-
-	public String getPassword() {
-
-		return this.password; 
-	}
-	
-	public void setPassword(String pw) {
-		this.password = pw; 
-	}
-
 }

@@ -33,13 +33,12 @@ public class UserService {
 	public void deleteUser(Long id) throws UserNotFoundException {
 		
 		// TODO
-		userRepository.deleteUser(id);
 	}
 	
 	public User updateUser(User user, Long id) throws UserNotFoundException {
 		
 		// TODO
-		userRepository.updateUser(id,user.getFirstname(), user.getLastname()); 
+		
 		return null;
 		
 	}
@@ -68,11 +67,7 @@ public class UserService {
 	
 	public User createOrdersForUser(Long id, Order order) throws UserNotFoundException{
 		
-		// get user
-		User user = this.findUser(id); 
-		//updte user
-		user.addOrder(order);
-		this.saveUser(user); 
+		// TODO
 		
 		return null;
 	}
