@@ -32,11 +32,9 @@ public class AuthorService {
 	}
 	
 	public Author findById(long id) throws AuthorNotFoundException {
-		
-		Author author = authorRepository.findById(id)
+
+        return authorRepository.findById(id)
 				.orElseThrow(()-> new AuthorNotFoundException("Author with the id: "+id+ "not found!"));
-		
-		return author;
 	}
 	public List<Author> getAllAuthors(){
 		return (List<Author>) authorRepository.findAll();

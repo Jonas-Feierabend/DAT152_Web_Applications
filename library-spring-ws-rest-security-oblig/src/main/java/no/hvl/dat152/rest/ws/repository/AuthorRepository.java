@@ -22,14 +22,13 @@ public interface AuthorRepository extends CrudRepository<Author, Long> {
 	
 	@Transactional
 	@Modifying
-	@Query("Delete From Author Where id = :id")
+	@Query("DELETE FROM Author a WHERE a.authorId = :id")
 	void deleteByISBN(@Param("id") String id); 
 	
 	
 	
 	@Transactional
 	@Modifying
-	@Query("Update Author Set firstname = :firstname, lastname = :lastname, books = :books Where id = :id ")
-	void updateAuthorById(@Param("id") Long id,@Param("firstname") String firstname,@Param("lastname") String lastname, @Param("books") Set<Book> books); 
-	// , lastname = :lastname, books = :books  
+	@Query("UPDATE Author a SET a.firstname = :firstname, a.lastname = :lastname, a.books = :books WHERE a.authorId = :id")
+	void updateAuthorById(@Param("id") Long id, @Param("firstname") String firstname, @Param("lastname") String lastname, @Param("books") Set<Book> books);
 }
