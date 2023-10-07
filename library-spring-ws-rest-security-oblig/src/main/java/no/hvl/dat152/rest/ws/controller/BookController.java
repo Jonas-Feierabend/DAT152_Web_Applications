@@ -57,7 +57,7 @@ public class BookController {
 	}
 	
 	@GetMapping("/books/{isbn}")
-	// TODO - check role
+	@PreAuthorize("hasAuthority('USER')")
 	public ResponseEntity<Object> getBook(@PathVariable("isbn") String isbn) throws BookNotFoundException{
 		
 		Book book;
@@ -73,13 +73,14 @@ public class BookController {
 	}
 	
 	@GetMapping("/books/{isbn}/authors")
-	// TODO - check role
+	@PreAuthorize("hasAuthority('USER')")
 	public ResponseEntity<Object> getAuthorsByBookISBN(@PathVariable("isbn") String isbn) throws BookNotFoundException{
 		
 		Set<Author> authors = bookService.findAuthorsByBookISBN(isbn);
 		
-		if(authors.isEmpty())
-			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
+		if(authors.isEmpty()) {
+				return new ResponseEntity<>(HttpStatus.NO_CONTENT);}
 		
 		return new ResponseEntity<>(authors, HttpStatus.OK);		
 	}
@@ -94,21 +95,23 @@ public class BookController {
 	}
 	
 	@PutMapping("/books/{isbn}")
-	// TODO - check role
+	@PreAuthorize("hasAuthority('USER')")
 	public ResponseEntity<Book> updateBook(@RequestBody Book book, @PathVariable("isbn") String isbn){
-		
-		int nbook;
+		System.out.println("in update book "); 
 		try {
-			nbook = bookService.updateBook(book, isbn);
+			Book ret_book = bookService.updateBook(book, isbn); 
+			return new ResponseEntity<>(ret_book, HttpStatus.OK);
+		
 		}catch(BookNotFoundException | UpdateBookFailedException e) {
+			System.out.println("Error in book controler: " + e); 
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
-		Book ret_book = bookService.findByISBN(isbn); 
-		return new ResponseEntity<>(ret_book, HttpStatus.OK);
+		
+
 	}
 	
 	@DeleteMapping("/books/{isbn}")
-	// TODO - check role
+	@PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<String> deleteBook(@PathVariable("isbn") String isbn) throws BookNotFoundException{
 		
 		bookService.deleteByISBN(isbn);

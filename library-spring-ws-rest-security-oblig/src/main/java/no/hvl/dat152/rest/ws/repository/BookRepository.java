@@ -29,23 +29,26 @@ public interface BookRepository extends CrudRepository<Book, Long>, PagingAndSor
 	
 	Page<Book> findAll(Pageable pageable);
 	
+
 	@Query("SELECT b FROM Book b WHERE b.isbn = :isbn")
 	Book findBookByISBN(@Param("isbn") String isbn);
 	
 	@Query("SELECT b FROM Book b join b.authors a WHERE a.authorId = :authorId")
 	List<Book> findBooksByAuthorId(@Param("authorId") long authorId);
 	
-	@Query(value = "SELECT * FROM Book limit :limit offset :offset", nativeQuery=true)
+	@Query(value = "SELECT b FROM Book limit :limit offset :offset", nativeQuery=true)
 	List<Book> findAllPaginate(@Param("limit") int limit, @Param("offset") int offset);
 
 	
-	@Transactional
+
 	@Modifying
 	@Query("Delete From Book Where isbn = :isbn")
 	void deleteByISBN(@Param("isbn") String isbn); 
 	
-	@Transactional
 	@Modifying
-	@Query("Update Book Set isbn = :isbn, title = :title, authors = :authors  Where id = :id ")
-	void updateBookById(@Param("id") Long id,@Param("isbn") String isbn, @Param("title") String title, @Param("authors") Set<Author> authors); 
+	@Query("Update Book b Set b.isbn = :isbn, b.title = :title, b.authors =:authors  Where b.id = :id ")
+	int updateBookById(@Param("id") Long id, @Param("isbn") String isbn, @Param("title") String title, @Param("authors") Set<Author> authors); 
+	
+	@Query("Select authors From Book Where isbn = :isbn")
+	Set<Author> findAuthorsByBookIsbn(@Param("isbn") String isbn); 
 }

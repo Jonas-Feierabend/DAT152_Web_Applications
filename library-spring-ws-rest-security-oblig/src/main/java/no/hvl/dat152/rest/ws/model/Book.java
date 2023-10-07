@@ -33,12 +33,17 @@ public class Book {
 	@Column(nullable = false)
 	private String title;
 	
+
+	
+	
 	@ManyToMany
 	@JoinTable(name = "book_author",
 			joinColumns = { @JoinColumn(name = "fk_book", referencedColumnName = "id")},
 			inverseJoinColumns = @JoinColumn(name = "fk_author", referencedColumnName = "authorId"))
 	@JsonIgnoreProperties("books")
 	private Set<Author> authors = new HashSet<Author>();
+	
+
 	
 
 	public Book() {

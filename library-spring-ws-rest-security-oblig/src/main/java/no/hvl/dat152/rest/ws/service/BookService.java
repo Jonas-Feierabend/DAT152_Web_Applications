@@ -9,6 +9,7 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +28,7 @@ public class BookService {
 	@Autowired
 	private BookRepository bookRepository;
 	
+
 	
 	public Book saveBook(Book book) {
 		
@@ -35,16 +37,36 @@ public class BookService {
 	}
 	
 	@Transactional
-	public int updateBook(Book book, String isbn) throws BookNotFoundException{
-		try {
-			//first get id to update 
-			long id = bookRepository.findBookByISBN(isbn).getId();
-			//update
-			bookRepository.updateBookById(id, book.getIsbn(), book.getTitle(), book.getAuthors());
-			 return 1; 
-		}catch(Exception e) {
-			throw new BookNotFoundException("Book  not found!");
+	public Book updateBook(Book book, String isbn) throws BookNotFoundException{
+		//first get id to update 
+		Book book_id = bookRepository.findBookByISBN(isbn); 
+		if(book_id == null) {
+			throw new BookNotFoundException("Book not found"); 
 		}
+		else {
+			long id = book_id.getId();
+			System.out.println(book.getIsbn()+ book.getTitle()+ book.getAuthors()); 
+			//update
+			Set<Author> authors = book.getAuthors(); 
+
+			int ret =  bookRepository.updateBookById(id, book.getIsbn(), book.getTitle(),authors);
+			
+			if(ret == 1)
+				return book; 
+			
+			else {
+				throw new UpdateBookFailedException("update failed"); 
+			}
+			/*
+			try {
+	
+			}catch(Exception e) {
+				System.out.println("update error" + e); 
+				throw new BookNotFoundException("Book  not found!");
+			}*/ 
+			
+		}
+
 		
 	}
 	public List<Book> findAll(){
@@ -77,14 +99,14 @@ public class BookService {
 	
 	public Set<Author> findAuthorsByBookISBN(String isbn) throws BookNotFoundException{
 		
-		// TODO
+		Set <Author> authors = bookRepository.findAuthorsByBookIsbn(isbn); 
 		
-		return null;
+		return authors; 
 		
 	}
-	
+	@Transactional
 	public int deleteByISBN(String isbn) throws BookNotFoundException{
-		
+		bookRepository.deleteByISBN(isbn);
 		try {
 			 bookRepository.deleteByISBN(isbn);
 			 return 1; 
