@@ -164,6 +164,7 @@ class ConfigCommandLineRunner implements CommandLineRunner  {
 		List<Role> roles = new ArrayList<>();
 		for(String role : userRoles) {
 			roles.add(new Role(role));
+			System.out.println("ROLES: Added the following role: " + role);
 		}
 		
 		return roles;

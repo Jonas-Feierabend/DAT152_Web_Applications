@@ -33,7 +33,7 @@ public interface BookRepository extends CrudRepository<Book, Long>, PagingAndSor
 	Book findBookByISBN(@Param("isbn") String isbn);
 	
 	@Query("SELECT b FROM Book b join b.authors a WHERE a.authorId = :authorId")
-	List<Book> findBooksByAuthorId(@Param("authorId") int authorId);
+	List<Book> findBooksByAuthorId(@Param("authorId") long authorId);
 	
 	@Query(value = "SELECT * FROM Book limit :limit offset :offset", nativeQuery=true)
 	List<Book> findAllPaginate(@Param("limit") int limit, @Param("offset") int offset);

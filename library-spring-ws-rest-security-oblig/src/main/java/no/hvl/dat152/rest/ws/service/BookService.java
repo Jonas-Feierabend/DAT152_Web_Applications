@@ -98,11 +98,20 @@ public class BookService {
 	}
 	
 	private Book findBookById(long id) throws BookNotFoundException {
-		
-		Book book = bookRepository.findById(id)
+
+        return bookRepository.findById(id)
 				.orElseThrow(() -> new BookNotFoundException("Book with id = "+id+" not found!"));
-		
-		return book;
+	}
+
+	public List<Book> findBookByAuthorId(long id) throws BookNotFoundException {
+		List<Book> list;
+		try{
+			list = bookRepository.findBooksByAuthorId(id);
+		} catch(Exception e) {
+			System.out.println(e);
+			throw new BookNotFoundException("There are no Books found for Author with id = " + id);
+		}
+		return list;
 	}
 	
 

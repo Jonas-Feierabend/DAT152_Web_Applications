@@ -6,6 +6,7 @@ package no.hvl.dat152.rest.ws.controller;
 import java.util.List;
 import java.util.Set;
 
+import no.hvl.dat152.rest.ws.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,9 +33,15 @@ import no.hvl.dat152.rest.ws.service.AuthorService;
 @RequestMapping("/elibrary/api/v1")
 public class AuthorController {
 
-	@Autowired
-	private AuthorService authorService;
-	
+	private final AuthorService authorService;
+
+	private final BookService bookService;
+
+	public AuthorController(AuthorService authorService, BookService bookService) {
+		this.authorService = authorService;
+		this.bookService = bookService;
+	}
+
 	@GetMapping("/authors/{id}")
 	@PreAuthorize("hasAuthority('USER')")
 	public ResponseEntity<Author> getAuthor(@PathVariable("id") Long id) throws AuthorNotFoundException {
@@ -73,17 +80,26 @@ public class AuthorController {
 	
 	
 	@PutMapping("/authors/{id}")
+	@PreAuthorize("hasAuthority('SUPER_ADMIN') or hasAuthority('ADMIN')")
 	public ResponseEntity<Object> updateAuthor(@PathVariable("id") Long id, @RequestBody Author a){
 		try {
-			int author = authorService.updateAuthor(id, a); 
+			int author = authorService.updateAuthor(id, a);
+			return new ResponseEntity<>(a, HttpStatus.OK);
 		} catch (BookNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} 
- 
-		Object nbook = null;
-		return new ResponseEntity<>(nbook, HttpStatus.CREATED);
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
 	}
 
+	@GetMapping("/authors/{id}/books")
+	public  ResponseEntity<Object> getBooksByAuthorId(@PathVariable("id") Long id){
+		try {
+			List<Book> bookList = bookService.findBookByAuthorId(id);
+			return new ResponseEntity<>(bookList, HttpStatus.OK);
+		} catch (BookNotFoundException e){
+			System.out.println(e);
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 
+	}
 }
