@@ -53,22 +53,27 @@ public class OrderController {
 	 * @return ResponseEntity<Object>
 	 */
 	@GetMapping("/orders")
-	// TODO authority annotation
+	@PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<Object> getAllBorrowOrders(
 			@RequestParam(required = false) LocalDate expiry, 
 			@RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "3") int size){
 		
 		Pageable pageable = PageRequest.of(page,page+size);
-		return (ResponseEntity<Object>) orderService.findByExpiryDate(expiry, pageable); 
-		
+		if (expiry != null) {
+		return new ResponseEntity<>(orderService.findByExpiryDate(expiry, pageable), HttpStatus.OK); 
+		}
+		else {
+			return new ResponseEntity<>(orderService.findAllOrders(), HttpStatus.OK);		
+		}
 
 	}
 	
 	@GetMapping("/orders/{id}")
-	// TODO authority annotation
+	@PreAuthorize("hasAuthority('ADMIN')")	
 	public ResponseEntity<Object> getBorrowOrder(@PathVariable("id") Long id) 
 			throws OrderNotFoundException, UnauthorizedOrderActionException{
+
 		
 		try {
 			Order order = orderService.findOrder(id);
@@ -85,11 +90,16 @@ public class OrderController {
 	public ResponseEntity<Object> updateOrder(@PathVariable("id") Long id, @RequestBody Order order) 
 			throws OrderNotFoundException, UserNotFoundException, UnauthorizedOrderActionException{
 
-		order = orderService.updateOrder(order, id);
-		Link rordersLink = linkTo(methodOn(OrderController.class).returnBookOrder(id)).withRel("Update_Return_or_Cancel");
-		order.add(rordersLink);
+		int ret = orderService.updateOrder(order, id);
 		
-		return new ResponseEntity<>(order, HttpStatus.OK);
+		//TODO 
+		//Link rordersLink = linkTo(methodOn(OrderController.class).returnBookOrder(id)).withRel("Update_Return_or_Cancel");
+		//order.add(rordersLink);
+		if(ret == 1) {
+			return new ResponseEntity<>(order, HttpStatus.OK);
+		}else {
+			return  new ResponseEntity<>("updateOrder returned non null (ordercontroller)", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 	
 	@DeleteMapping("/orders/{id}")
@@ -98,8 +108,15 @@ public class OrderController {
 			throws OrderNotFoundException, UnauthorizedOrderActionException{
 		
 		// TODO
+		try {
+			int ret  = orderService.deleteOrder(id); 
+
+			return new ResponseEntity<>(1,HttpStatus.OK); 
 		
-		return null;
+		}catch(OrderNotFoundException | UnauthorizedOrderActionException e) {
+
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 	
 }

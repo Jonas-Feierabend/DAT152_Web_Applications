@@ -65,7 +65,7 @@ class TestOrder {
 		
 		Order order1 = new Order("ghijk1234", LocalDate.now().plusWeeks(4));
 		order1.setId(1L);
-		
+		System.out.println("The d is " + order1.getId()); 
 		Response response = RestAssured.given()
 				.header("Authorization", "Bearer "+ SUPER_ADMIN_TOKEN)
 				.contentType(MediaType.APPLICATION_JSON_VALUE)

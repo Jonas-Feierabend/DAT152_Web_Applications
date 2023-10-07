@@ -5,6 +5,7 @@ package no.hvl.dat152.rest.ws.repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -42,17 +43,17 @@ public interface OrderRepository extends CrudRepository<Order, Long>, PagingAndS
 	@Query(value = "SELECT user_email FROM orders WHERE id = :id", nativeQuery=true)
 	String findEmailByOrderId(Long id);
 	
-	
+
 	
 	@Transactional
 	@Modifying
 	@Query("Delete From Order Where id=:id")
-	void deleteOrder(@Param("id") Long id ); 
+	int deleteOrder(@Param("id") Long id ); 
 	
-	/* 
+	
 	@Transactional
 	@Modifying
-	@Query("Update Order Set")
-	void updateOrder(@Param("id") Long id, @Param("order") Order order ); */ 
+	@Query("Update Order Set id=:new_id, isbn=:isbn, expiry=:expiry Where id =:id")
+	int updateOrder(@Param("new_id") Long new_id,  @Param("id") Long id, @Param("isbn") String isbn,@Param("expiry") LocalDate expiry);
 	
 }
