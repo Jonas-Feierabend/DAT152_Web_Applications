@@ -41,7 +41,7 @@ public class UserController {
 	private UserService userService;
 	
 	@GetMapping("/users")
-	// TODO authority annotation
+	@PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<Object> getUsers(){
 		
 		List<User> users = userService.findAllUsers();
@@ -95,8 +95,8 @@ public class UserController {
 			throws UserNotFoundException, OrderNotFoundException, UnauthorizedOrderActionException{
 		
 		userService.createOrdersForUser(id, order); 
-		
-		return null;
+		User user = userService.findUser(id); 
+		return new ResponseEntity <>(user, HttpStatus.CREATED); 
 	}
 	
 	private void addLinks(Set<Order> orders) throws OrderNotFoundException, UnauthorizedOrderActionException {

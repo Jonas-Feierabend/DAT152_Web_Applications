@@ -33,7 +33,7 @@ public class AdminUserController {
 	
 	
 	@PutMapping("/users/{id}")
-	// TODO authority annotation
+	@PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<Object> updateUserRole(@PathVariable("id") Long id, @RequestParam("role") String role) 
 			throws UserNotFoundException{
 		
@@ -44,7 +44,7 @@ public class AdminUserController {
 	}
 	
 	@DeleteMapping("/users/{id}")
-	// TODO authority annotation
+	@PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<Object> deleteUserRole(@PathVariable("id") Long id, 
 			@RequestParam("role") String role) throws UserNotFoundException{
 

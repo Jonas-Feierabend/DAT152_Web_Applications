@@ -39,7 +39,7 @@ public class UserService {
 	public User updateUser(User user, Long id) throws UserNotFoundException {
 		
 		// TODO
-		userRepository.updateUser(id,user.getFirstname(), user.getLastname()); 
+		userRepository.updateUser(id,user.getFirstname(), user.getLastname(), user.getEmail(), user.getOrders(), user.getUserid()); 
 		return null;
 		
 	}

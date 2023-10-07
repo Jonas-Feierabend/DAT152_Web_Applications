@@ -47,6 +47,8 @@ class TestUser {
 		Response response = RestAssured.given()
 				.header("Authorization", "Bearer "+ USER_TOKEN)
 				.get(API_ROOT+"/users");
+		
+		System.out.println("Got response: " + response.getStatusCode()); 
 		assertEquals(HttpStatus.UNAUTHORIZED.value(), response.getStatusCode());
 	}
 	

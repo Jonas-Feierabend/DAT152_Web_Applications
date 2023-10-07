@@ -7,6 +7,7 @@ import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import no.hvl.dat152.rest.ws.exceptions.UserNotFoundException;
 import no.hvl.dat152.rest.ws.model.Role;
@@ -46,6 +47,7 @@ public class AdminUserService {
 		return user; 
 	}
 	
+	@Transactional
 	public User updateUserRole(Long id, String role_string) throws UserNotFoundException {
 		
 		User user = this.findUser(id);
