@@ -57,10 +57,16 @@ public class OrderService {
 		return order;
 	}
 	
-	public int updateOrder(Order order, Long id) throws OrderNotFoundException {
-		//TODO 
-		return orderRepository.updateOrder(id,order.getId(), order.getIsbn(), order.getExpiry()); 
+	public Order updateOrder(Order order, Long id) throws OrderNotFoundException {
 		
+		//orderRepository.updateOrder(id,order); 
+		Order order_obj = this.findOrder(id);
+		order_obj.setExpiry(order.getExpiry());
+		order_obj.setId(order.getId()); 
+		order_obj.setIsbn(order.getIsbn());
+		
+		
+		return this.saveOrder(order_obj);			
 	}
 	
 	public List<Order> findByExpiryDate(LocalDate expiry, Pageable page){

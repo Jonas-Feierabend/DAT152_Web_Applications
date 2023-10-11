@@ -53,6 +53,25 @@ public class UserController {
 			return new ResponseEntity<>(users, HttpStatus.OK);
 	}
 	
+	
+	@PostMapping("/users")
+	public ResponseEntity<Object> createUser(@RequestBody User user){
+		
+		user = userService.saveUser(user);
+		
+		return new ResponseEntity<>(user, HttpStatus.CREATED);
+	}
+	
+	@PutMapping("/users/{id}")
+	public ResponseEntity<Object> updateUser(@RequestBody User user, 
+			@PathVariable("id") Long id) throws UserNotFoundException{
+		
+		user = userService.updateUser(user, id);
+		
+		return new ResponseEntity<>(user, HttpStatus.OK);
+	}
+	
+	
 	@GetMapping(value = "/users/{id}")
 	// TODO authority annotation
 	public ResponseEntity<Object> getUser(@PathVariable("id") Long id) 

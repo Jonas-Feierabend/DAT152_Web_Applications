@@ -59,18 +59,19 @@ public class AuthorService {
 	}
 	
 	@Transactional
-	public int updateAuthor(Long id, Author author) throws BookNotFoundException{
+	public Author updateAuthor(Long id, Author author) throws BookNotFoundException{
 		try {
 	
-			//authorRepository.updateAuthorById(id, author.getFirstname(), author.getLastname(), author.getBooks());
-			// , author.getLastname(), author.getBooks()
-			authorRepository.deleteById(id);
-			authorRepository.save(author); 
-			return 1;   
+			Author author_obj = this.findById(id); 
+			author_obj.setAuthorId(author.getAuthorId());
+			author_obj.setBooks(author.getBooks());
+			author_obj.setFirstname(author.getFirstname());
+			author_obj.setLastname(author.getLastname());
+			return this.saveAuthor(author_obj);   
 		}catch(Exception e) {
 			System.out.println(e);
 			//throw new BookNotFoundException("author  not found!");
-			return 1; 
+			return null;  
 		}
 		
 	}

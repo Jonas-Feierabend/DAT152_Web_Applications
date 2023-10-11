@@ -75,7 +75,7 @@ public class AuthorController {
 	@PutMapping("/authors/{id}")
 	public ResponseEntity<Object> updateAuthor(@PathVariable("id") Long id, @RequestBody Author a){
 		try {
-			int author = authorService.updateAuthor(id, a); 
+			authorService.updateAuthor(id, a); 
 		} catch (BookNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -90,14 +90,10 @@ public class OrderController {
 	public ResponseEntity<Object> updateOrder(@PathVariable("id") Long id, @RequestBody Order order) 
 			throws OrderNotFoundException, UserNotFoundException, UnauthorizedOrderActionException{
 
-		int ret = orderService.updateOrder(order, id);
-		
-		//TODO 
-		//Link rordersLink = linkTo(methodOn(OrderController.class).returnBookOrder(id)).withRel("Update_Return_or_Cancel");
-		//order.add(rordersLink);
-		if(ret == 1) {
-			return new ResponseEntity<>(order, HttpStatus.OK);
-		}else {
+		try {
+		orderService.updateOrder(order, id);
+		return new ResponseEntity<>(order, HttpStatus.OK);
+		}catch (Exception e) {
 			return  new ResponseEntity<>("updateOrder returned non null (ordercontroller)", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}

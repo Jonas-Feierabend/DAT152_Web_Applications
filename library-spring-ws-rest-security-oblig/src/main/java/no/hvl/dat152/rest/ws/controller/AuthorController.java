@@ -51,6 +51,7 @@ public class AuthorController {
 		return new ResponseEntity<>(author, HttpStatus.OK);		
 	}
 	@GetMapping("/authors")
+	@PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<Object> getAllAuthors(){
 		
 		List<Author> authors = authorService.getAllAuthors();
@@ -83,7 +84,7 @@ public class AuthorController {
 	@PreAuthorize("hasAuthority('SUPER_ADMIN') or hasAuthority('ADMIN')")
 	public ResponseEntity<Object> updateAuthor(@PathVariable("id") Long id, @RequestBody Author a){
 		try {
-			int author = authorService.updateAuthor(id, a);
+			authorService.updateAuthor(id, a);
 			return new ResponseEntity<>(a, HttpStatus.OK);
 		} catch (BookNotFoundException e) {
 			e.printStackTrace();

@@ -72,7 +72,7 @@ public class BookController {
 	@PutMapping("/books/{isbn}")
 	public ResponseEntity<Object> updateBook(@PathVariable("isbn") String isbn, @RequestBody Book book){
 		try {
-			this.deleteBook(isbn);
+			bookService.updateBook(isbn, book); 
 		} catch (BookNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
