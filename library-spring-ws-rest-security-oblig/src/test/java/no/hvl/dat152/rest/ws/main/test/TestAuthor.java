@@ -27,8 +27,8 @@ class TestAuthor {
 
 	private String API_ROOT = "http://localhost:8090/elibrary/api/v1";
 
-	@Value("${admin.token}") 
-	private String ADMIN_TOKEN = "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJiZXJpdEBlbWFpbC5jb20iLCJpc3MiOiJEQVQxNTItTGVjdHVyZXJAVERPWSIsImZpcnN0bmFtZSI6IkJlcml0IiwibGFzdG5hbWUiOiJKw7hyZ2Vuc2VuIiwicm9sZXMiOlsiVVNFUiIsIkFETUlOIiwiU1VQRVJfQURNSU4iXSwiaWF0IjoxNjk3MDQ0NTk1LCJleHAiOjE2OTc0NzY1OTV9.LcxBZoncHFENfw3GTa6kZZl-OT7Hu_w9rddUEhqsdk_OxUnuNMxSM96G7VCOi9s2Zlhv6o8IVFUgZjU2lT8PWB2kRVVkKHzQ0kQzVkrAzFbEEjwucS4NOMz0z22S711e3-wYtrqMMpO28BNgaZ_s13NTTqaFGrqdplRpbBOcK5uJTA-b2pqnVFMKyVxNKPwWfM1fXTwt4jUDOCUjQpGdYVqgAlYZlS0JBkeAYFocYEFy-LXZkHSafIJzyQBmbsuaUb6d5wV7tl7H37zzlaDbqnEMgi8cxCwzL1M-GJEgpybEDHeWeoJVuRi7tX4QwZNcZUAnJhfWd1Zaeyf0MPPV3A"; 
+
+	private String ADMIN_TOKEN ="eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJiZXJpdEBlbWFpbC5jb20iLCJpc3MiOiJEQVQxNTItTGVjdHVyZXJAVERPWSIsImZpcnN0bmFtZSI6IkJlcml0IiwibGFzdG5hbWUiOiJKw7hyZ2Vuc2VuIiwicm9sZXMiOlsiQURNSU4iLCJTVVBFUl9BRE1JTiIsIlVTRVIiXSwiaWF0IjoxNjk3MDk5NzgxLCJleHAiOjE2OTc1MzE3ODF9.lYyBJg2qblqCuECiM7WsDoiLqzgKWmx0t5NHd5GuMW2Pj_8i80VJeGUEAjc4zgQKrnw_Sn5bAgIHVMFRoW-DPHjp9SEsc4YStwTWA6u8xcxYKAy-Eimo9LFMyUKe5XuVCt6g78EG04tnbGRn-0_Zq0W6O6U5LRfz1VU8G2CjCcYj1Y0FM4Sk7adQnAI9_6W5mdlckMJXid12oyR76P-a8O3KreFSo1grADBK2wSYKqEKxGT65Z8ksRr1L1UdT5Ome0zn16lPUeOY8DvNKqjODptquuE51YYKgUeiOaOIWs8gsiyfISasWU38sSdMbdH58oatWfkgDXXkSW5wqIWukg";
 
 	@Value("${user.token}")
 	private String USER_TOKEN;
@@ -39,6 +39,8 @@ class TestAuthor {
 		Response response = RestAssured.given()
 				.header("Authorization", "Bearer "+ ADMIN_TOKEN)
 				.get(API_ROOT+"/authors");
+		
+		System.out.println("Bearer "+ ADMIN_TOKEN); 
 		assertEquals(HttpStatus.OK.value(), response.getStatusCode());
 		assertTrue(response.jsonPath().getList("authorId").size() > 0);
 	}

@@ -37,38 +37,26 @@ public class BookService {
 	}
 	
 	@Transactional
-	public Book updateBook(Book book, String isbn) throws BookNotFoundException{
-		//first get id to update 
-		Book book_id = bookRepository.findBookByISBN(isbn); 
-		if(book_id == null) {
-			throw new BookNotFoundException("Book not found"); 
-		}
-		else {
-			long id = book_id.getId();
-			System.out.println(book.getIsbn()+ book.getTitle()+ book.getAuthors()); 
+	public Book updateBook(String isbn, Book book) throws BookNotFoundException{
+		try {
+			//first get id to update 
+			//long id = bookRepository.findBookByISBN(isbn).getId();
 			//update
-			Set<Author> authors = book.getAuthors(); 
-
-			int ret =  bookRepository.updateBookById(id, book.getIsbn(), book.getTitle(),authors);
+			//bookRepository.updateBookById(id, book.getIsbn(), book.getTitle(), book.getAuthors());
 			
-			if(ret == 1)
-				return book; 
+			Book book_obj = bookRepository.findBookByISBN(isbn); 
+			book_obj.setAuthors(book.getAuthors());
+			book_obj.setId(book.getId());
+			book_obj.setIsbn(book.getIsbn());
+			book_obj.setTitle(book.getTitle());
 			
-			else {
-				throw new UpdateBookFailedException("update failed"); 
-			}
-			/*
-			try {
-	
-			}catch(Exception e) {
-				System.out.println("update error" + e); 
-				throw new BookNotFoundException("Book  not found!");
-			}*/ 
-			
+			return this.saveBook(book_obj);  
+		}catch(Exception e) {
+			throw new BookNotFoundException("Book  not found!");
 		}
-
-		
 	}
+		
+		
 	public List<Book> findAll(){
 		
 		return (List<Book>) bookRepository.findAll();

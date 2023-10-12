@@ -113,8 +113,8 @@ public class UserController {
 	public ResponseEntity<Object> createUserOrders(@PathVariable("id") Long id, @RequestBody Order order) 
 			throws UserNotFoundException, OrderNotFoundException, UnauthorizedOrderActionException{
 		
-		userService.createOrdersForUser(id, order); 
-		User user = userService.findUser(id); 
+		User user = userService.createOrdersForUser(id, order); 
+
 		return new ResponseEntity <>(user, HttpStatus.CREATED); 
 	}
 	

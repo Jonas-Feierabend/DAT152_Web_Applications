@@ -99,7 +99,7 @@ public class BookController {
 	public ResponseEntity<Book> updateBook(@RequestBody Book book, @PathVariable("isbn") String isbn){
 		System.out.println("in update book "); 
 		try {
-			Book ret_book = bookService.updateBook(book, isbn); 
+			Book ret_book = bookService.updateBook(isbn, book); 
 			return new ResponseEntity<>(ret_book, HttpStatus.OK);
 		
 		}catch(BookNotFoundException | UpdateBookFailedException e) {

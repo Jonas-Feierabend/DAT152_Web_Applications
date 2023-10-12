@@ -89,9 +89,9 @@ class TestUser {
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 				.body(order1)
 				.post(API_ROOT+"/users/{id}/orders", "2");
-
+	
 	    assertEquals(HttpStatus.CREATED.value(), response.getStatusCode());
-	    assertTrue(response.jsonPath().getList("orders").get(0).toString().contains("qabfde1230"));
+	    assertTrue(response.jsonPath().getList("orders").get(1).toString().contains("qabfde1230"));
 
 	}
 	

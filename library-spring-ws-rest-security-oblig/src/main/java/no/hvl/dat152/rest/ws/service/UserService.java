@@ -84,7 +84,7 @@ public class UserService {
 		user.addOrder(order);
 		this.saveUser(user); 
 		
-		return null;
+		return user;
 	}
 	
 	
