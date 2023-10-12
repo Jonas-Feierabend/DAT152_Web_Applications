@@ -52,6 +52,7 @@ public class AdminUserService {
 		
 		User user = this.findUser(id);
 		Role role = new Role(role_string); 
+		roleRepository.save(role); 
 		user.addRole(role);
 		System.out.println("hallo"); 
 		user = userRepository.save(user);
