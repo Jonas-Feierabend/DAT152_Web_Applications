@@ -59,7 +59,7 @@ public class OrderService {
 	
 	public Order updateOrder(Order order, Long id) throws OrderNotFoundException {
 		
-		//orderRepository.updateOrder(id,order); 
+	
 		Order order_obj = this.findOrder(id);
 		order_obj.setExpiry(order.getExpiry());
 		order_obj.setId(order.getId()); 

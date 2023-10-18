@@ -69,9 +69,9 @@ public class AuthorService {
 			author_obj.setLastname(author.getLastname());
 			return this.saveAuthor(author_obj);   
 		}catch(Exception e) {
-			System.out.println(e);
-			//throw new BookNotFoundException("author  not found!");
-			return null;  
+
+			throw new BookNotFoundException("author  not found!");
+		
 		}
 		
 	}

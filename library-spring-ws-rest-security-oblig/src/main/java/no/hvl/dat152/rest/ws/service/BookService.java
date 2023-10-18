@@ -39,10 +39,6 @@ public class BookService {
 	@Transactional
 	public Book updateBook(String isbn, Book book) throws BookNotFoundException{
 		try {
-			//first get id to update 
-			//long id = bookRepository.findBookByISBN(isbn).getId();
-			//update
-			//bookRepository.updateBookById(id, book.getIsbn(), book.getTitle(), book.getAuthors());
 			
 			Book book_obj = bookRepository.findBookByISBN(isbn); 
 			book_obj.setAuthors(book.getAuthors());
